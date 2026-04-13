@@ -1256,29 +1256,35 @@
     /* ══════════════════════════════════════════════════════════ */
 
     /* ── Progress bar ── */
-    const totalSecs = 8;
     const strip = document.getElementById('progStrip');
-    for (let i = 1; i <= totalSecs; i++) {
-        const seg = document.createElement('div');
-        seg.className = 'prog-seg';
-        seg.id = 'seg' + i;
-        strip.appendChild(seg);
+
+    /* Reconstruit la barre selon les sections actuellement visibles */
+    function rebuildProgress() {
+        strip.innerHTML = '';
+        const visibles = Array.from(document.querySelectorAll('.form-section'))
+            .filter(sec => sec.offsetParent !== null);
+        visibles.forEach((sec, i) => {
+            const seg = document.createElement('div');
+            seg.className = 'prog-seg';
+            sec._segIdx = i;
+            strip.appendChild(seg);
+        });
+        updateProgress();
     }
 
     function updateProgress() {
         const mid = window.scrollY + window.innerHeight * 0.5;
-        document.querySelectorAll('.form-section').forEach((sec) => {
-            const secNum = sec.getAttribute('data-sec');
-            const seg = document.getElementById('seg' + secNum);
-            if (!seg) return;
-            if (sec.offsetParent === null) { seg.classList.remove('active'); return; }
+        const segs = strip.querySelectorAll('.prog-seg');
+        const visibles = Array.from(document.querySelectorAll('.form-section'))
+            .filter(sec => sec.offsetParent !== null);
+        visibles.forEach((sec, i) => {
             const top = sec.getBoundingClientRect().top + window.scrollY;
-            seg.classList.toggle('active', mid >= top);
+            if (segs[i]) segs[i].classList.toggle('active', mid >= top);
         });
     }
 
     window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
+    rebuildProgress();
 
     /* ── File name display ── */
     function showFile(input, targetId) {
@@ -1323,6 +1329,7 @@
             sec.classList.remove('show');
             resetSectionMineur();
         }
+        requestAnimationFrame(rebuildProgress);
     });
 
     /* ── Conditional: alternance ── */
