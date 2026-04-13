@@ -1378,11 +1378,13 @@
 
     function updateProgress() {
         const mid = window.scrollY + window.innerHeight * 0.5;
-        document.querySelectorAll('.form-section').forEach((sec, idx) => {
-            if (sec.offsetParent === null) return; // ignorer les sections cachées
+        document.querySelectorAll('.form-section').forEach((sec) => {
+            const secNum = sec.getAttribute('data-sec');
+            const seg = document.getElementById('seg' + secNum);
+            if (!seg) return;
+            if (sec.offsetParent === null) { seg.classList.remove('active'); return; }
             const top = sec.getBoundingClientRect().top + window.scrollY;
-            const seg = document.getElementById('seg' + (idx + 1));
-            if (seg) seg.classList.toggle('active', mid >= top);
+            seg.classList.toggle('active', mid >= top);
         });
     }
 
