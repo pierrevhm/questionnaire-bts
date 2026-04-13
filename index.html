@@ -733,10 +733,100 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 3 ══════════════ -->
+        <!-- ══════════════ PARTIE 3 — CHOIX DU PROGRAMME ══════════════ -->
         <div class="form-section" data-sec="3">
             <div class="section-header">
                 <div class="sec-num">3</div>
+                <h2>Choix du Programme</h2>
+            </div>
+            <div class="section-body">
+                <p class="helper-text" style="margin-bottom:20px;">Indiquez le ou les programme(s) et établissement(s) souhaités, par ordre de préférence.</p>
+
+                <div class="subsection">
+                    <h3>1<sup>er</sup> Choix <span class="req">*</span></h3>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Programme souhaité <span class="req">*</span></label>
+                            <select name="prog1_programme" required>
+                                <option value="">-- Sélectionnez un programme --</option>
+                                <option>BTS MCO — Management Commercial Opérationnel</option>
+                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
+                                <option>BTS COM — Communication</option>
+                                <option>BTS GPMe — Gestion de la PME</option>
+                                <option>BTS CG — Comptabilité et Gestion</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Établissement <span class="req">*</span></label>
+                            <input type="text" name="prog1_etablissement" placeholder="Nom de l'école / campus" required>
+                        </div>
+                        <div class="field">
+                            <label>Ville</label>
+                            <input type="text" name="prog1_ville" placeholder="ex. Paris, Lyon…">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>2<sup>e</sup> Choix <span style="font-size:.8rem;font-weight:400;color:#999;">(optionnel)</span></h3>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Programme souhaité</label>
+                            <select name="prog2_programme">
+                                <option value="">-- Sélectionnez un programme --</option>
+                                <option>BTS MCO — Management Commercial Opérationnel</option>
+                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
+                                <option>BTS COM — Communication</option>
+                                <option>BTS GPMe — Gestion de la PME</option>
+                                <option>BTS CG — Comptabilité et Gestion</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Établissement</label>
+                            <input type="text" name="prog2_etablissement" placeholder="Nom de l'école / campus">
+                        </div>
+                        <div class="field">
+                            <label>Ville</label>
+                            <input type="text" name="prog2_ville" placeholder="ex. Paris, Lyon…">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>3<sup>e</sup> Choix <span style="font-size:.8rem;font-weight:400;color:#999;">(optionnel)</span></h3>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Programme souhaité</label>
+                            <select name="prog3_programme">
+                                <option value="">-- Sélectionnez un programme --</option>
+                                <option>BTS MCO — Management Commercial Opérationnel</option>
+                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
+                                <option>BTS COM — Communication</option>
+                                <option>BTS GPMe — Gestion de la PME</option>
+                                <option>BTS CG — Comptabilité et Gestion</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Établissement</label>
+                            <input type="text" name="prog3_etablissement" placeholder="Nom de l'école / campus">
+                        </div>
+                        <div class="field">
+                            <label>Ville</label>
+                            <input type="text" name="prog3_ville" placeholder="ex. Paris, Lyon…">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 4 ══════════════ -->
+        <div class="form-section" data-sec="4">
+            <div class="section-header">
+                <div class="sec-num">4</div>
                 <h2>Parcours Scolaire</h2>
             </div>
             <div class="section-body">
@@ -759,7 +849,17 @@
 
                     <div class="field">
                         <label>Année d'Obtention <span class="req">*</span></label>
-                        <input type="number" name="bac_annee" placeholder="ex. 2023" min="1990" max="2027" required>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                            <input type="number" name="bac_annee" id="bac_annee_input" placeholder="ex. 2023" min="1990" max="2027" style="flex:1;min-width:120px;">
+                            <label style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:.85rem;cursor:pointer;white-space:nowrap;">
+                                <input type="checkbox" id="bac_en_cours" name="bac_en_cours" onchange="
+                                    const inp = document.getElementById('bac_annee_input');
+                                    inp.disabled = this.checked;
+                                    inp.required = !this.checked;
+                                    inp.value = '';
+                                "> En cours
+                            </label>
+                        </div>
                     </div>
 
                     <div class="field">
@@ -786,10 +886,10 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 4 ══════════════ -->
-        <div class="form-section" data-sec="4">
+        <!-- ══════════════ PARTIE 5 ══════════════ -->
+        <div class="form-section" data-sec="5">
             <div class="section-header">
-                <div class="sec-num">4</div>
+                <div class="sec-num">5</div>
                 <h2>Test de Positionnement</h2>
             </div>
             <div class="section-body">
@@ -827,10 +927,10 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 5 — QCM ══════════════ -->
-        <div class="form-section" data-sec="5">
+        <!-- ══════════════ PARTIE 6 — QCM ══════════════ -->
+        <div class="form-section" data-sec="6">
             <div class="section-header">
-                <div class="sec-num">5</div>
+                <div class="sec-num">6</div>
                 <h2>QCM — Évaluation des Connaissances</h2>
             </div>
             <div class="section-body">
@@ -954,10 +1054,10 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 6 — SOFT SKILLS ══════════════ -->
-        <div class="form-section" data-sec="6">
+        <!-- ══════════════ PARTIE 7 — SOFT SKILLS ══════════════ -->
+        <div class="form-section" data-sec="7">
             <div class="section-header">
-                <div class="sec-num">6</div>
+                <div class="sec-num">7</div>
                 <h2>Auto-évaluation — Soft Skills</h2>
             </div>
             <div class="section-body">
@@ -1076,10 +1176,10 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 7 ══════════════ -->
-        <div class="form-section" data-sec="7">
+        <!-- ══════════════ PARTIE 8 ══════════════ -->
+        <div class="form-section" data-sec="8">
             <div class="section-header">
-                <div class="sec-num">7</div>
+                <div class="sec-num">8</div>
                 <h2>Entreprise d'Accueil</h2>
             </div>
             <div class="section-body">
@@ -1152,10 +1252,10 @@
             </div>
         </div>
 
-        <!-- ══════════════ PARTIE 8 ══════════════ -->
-        <div class="form-section" data-sec="8">
+        <!-- ══════════════ PARTIE 9 ══════════════ -->
+        <div class="form-section" data-sec="9">
             <div class="section-header">
-                <div class="sec-num">8</div>
+                <div class="sec-num">9</div>
                 <h2>Pièces Jointes &amp; Déclarations</h2>
             </div>
             <div class="section-body">
@@ -1267,7 +1367,7 @@
     /* ══════════════════════════════════════════════════════════ */
 
     /* ── Progress bar ── */
-    const totalSecs = 8;
+    const totalSecs = 9;
     const strip = document.getElementById('progStrip');
     for (let i = 1; i <= totalSecs; i++) {
         const seg = document.createElement('div');
@@ -1279,6 +1379,7 @@
     function updateProgress() {
         const mid = window.scrollY + window.innerHeight * 0.5;
         document.querySelectorAll('.form-section').forEach((sec, idx) => {
+            if (sec.offsetParent === null) return; // ignorer les sections cachées
             const top = sec.getBoundingClientRect().top + window.scrollY;
             const seg = document.getElementById('seg' + (idx + 1));
             if (seg) seg.classList.toggle('active', mid >= top);
