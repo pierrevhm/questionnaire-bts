@@ -1,0 +1,90 @@
+{
+  "name": "BTS Business School — Réception Candidatures",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "candidature-bts",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1111111-1111-1111-1111-111111111111",
+      "name": "Webhook Candidature",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "a1111111-1111-1111-1111-111111111111"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"success\": true }",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "*" }
+            ]
+          }
+        }
+      },
+      "id": "b2222222-2222-2222-2222-222222222222",
+      "name": "Répondre OK au navigateur",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [460, 160]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraire les données envoyées par le formulaire\nconst body = $input.first().json.body;\nconst pdfBase64 = body.pdfBase64;\nconst fileName  = body.fileName  || 'dossier_candidature.pdf';\nconst formData  = body.formData  || {};\n\n// Supprimer le préfixe data:application/pdf;base64,\nconst base64Data = pdfBase64.includes(',')\n  ? pdfBase64.split(',')[1]\n  : pdfBase64;\n\n// Convertir en données binaires pour la pièce jointe\nconst binaryData = await this.helpers.prepareBinaryData(\n  Buffer.from(base64Data, 'base64'),\n  fileName,\n  'application/pdf'\n);\n\nreturn [{\n  json:   { ...formData, _fileName: fileName },\n  binary: { pdf: binaryData }\n}];"
+      },
+      "id": "c3333333-3333-3333-3333-333333333333",
+      "name": "Convertir PDF en binaire",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 440]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@bts-school.fr",
+        "toEmail": "secretariat@votre-ecole.fr",
+        "subject": "=Nouvelle candidature BTS \u2014 {{ $json.prenom }} {{ $json.nom }}",
+        "emailFormat": "html",
+        "message": "=<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"UTF-8\"></head><body style=\"font-family:Arial,sans-serif;color:#333;max-width:680px;margin:0 auto\">\n<div style=\"background:#153353;color:white;padding:18px 24px;border-radius:8px 8px 0 0\">\n  <h1 style=\"margin:0;font-size:1.3rem\">BTS Business School</h1>\n  <p style=\"margin:4px 0 0;opacity:.7;font-size:.85rem\">Nouveau dossier de candidature</p>\n</div>\n<div style=\"border:1px solid #ddd;border-top:none;padding:20px 24px;border-radius:0 0 8px 8px\">\n\n  <h2 style=\"color:#FEB753;border-bottom:2px solid #FEB753;padding-bottom:5px\">État Civil</h2>\n  <table style=\"width:100%;border-collapse:collapse;font-size:.9rem\">\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353;width:38%\">Candidat(e)</td><td style=\"padding:5px 10px\">{{ $json.civilite === 'madame' ? 'Madame' : 'Monsieur' }} {{ $json.prenom }} {{ $json.nom }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Email</td><td style=\"padding:5px 10px\">{{ $json.email }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Téléphone</td><td style=\"padding:5px 10px\">{{ $json.telephone }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Date de naissance</td><td style=\"padding:5px 10px\">{{ $json.date_naissance }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Nationalité</td><td style=\"padding:5px 10px\">{{ $json.nationalite }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Adresse</td><td style=\"padding:5px 10px\">{{ $json.adresse }}, {{ $json.code_postal }} {{ $json.ville }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Situation familiale</td><td style=\"padding:5px 10px\">{{ $json.situation_familiale }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Handicap</td><td style=\"padding:5px 10px\">{{ $json.handicap === 'oui' ? 'Oui' : 'Non' }}</td></tr>\n  </table>\n\n  <h2 style=\"color:#FEB753;border-bottom:2px solid #FEB753;padding-bottom:5px;margin-top:20px\">Formation</h2>\n  <table style=\"width:100%;border-collapse:collapse;font-size:.9rem\">\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353;width:38%\">Baccalauréat</td><td style=\"padding:5px 10px\">{{ $json.baccalaureat }} ({{ $json.bac_annee }})</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Département</td><td style=\"padding:5px 10px\">{{ $json.bac_departement }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Dernier diplôme</td><td style=\"padding:5px 10px\">{{ $json.dernier_diplome }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Classe actuelle</td><td style=\"padding:5px 10px\">{{ $json.classe_actuelle }}</td></tr>\n  </table>\n\n  <h2 style=\"color:#FEB753;border-bottom:2px solid #FEB753;padding-bottom:5px;margin-top:20px\">Entreprise d'accueil</h2>\n  <table style=\"width:100%;border-collapse:collapse;font-size:.9rem\">\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353;width:38%\">Alternance trouvée</td><td style=\"padding:5px 10px\">{{ $json.alternance === 'oui' ? 'Oui' : 'Non' }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Entreprise</td><td style=\"padding:5px 10px\">{{ $json.ent_nom || '—' }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Contact</td><td style=\"padding:5px 10px\">{{ $json.ent_contact_nom || '—' }} — {{ $json.ent_contact_fonction || '' }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Tél. / Email</td><td style=\"padding:5px 10px\">{{ $json.ent_tel || '—' }} / {{ $json.ent_email || '—' }}</td></tr>\n  </table>\n\n  <h2 style=\"color:#FEB753;border-bottom:2px solid #FEB753;padding-bottom:5px;margin-top:20px\">Test de positionnement</h2>\n  <table style=\"width:100%;border-collapse:collapse;font-size:.9rem\">\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353;width:38%\">Niveau</td><td style=\"padding:5px 10px\">{{ { debutant:'Débutant', intermediaire:'Intermédiaire', avance:'Avancé', expert:'Expert' }[$json.niveau] || $json.niveau }}</td></tr>\n    <tr style=\"background:#f9f9f9\"><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Motivations</td><td style=\"padding:5px 10px\">{{ $json.motivation }}</td></tr>\n    <tr><td style=\"padding:5px 10px;font-weight:bold;color:#153353\">Projet professionnel</td><td style=\"padding:5px 10px\">{{ $json.projet_pro }}</td></tr>\n  </table>\n\n  <p style=\"margin-top:22px;padding:10px 14px;background:#f0f2fc;border-left:4px solid #153353;font-size:.82rem;color:#555\">\n    📎 Le dossier complet (PDF) est disponible en pièce jointe.\n  </p>\n</div>\n<p style=\"text-align:center;color:#bbb;font-size:.75rem;margin-top:12px\">Reçu le {{ $now.toFormat('dd/MM/yyyy') }} à {{ $now.toFormat('HH:mm') }}</p>\n</body></html>",
+        "attachments": "pdf",
+        "options": {}
+      },
+      "id": "d4444444-4444-4444-4444-444444444444",
+      "name": "Envoyer email + PDF",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [680, 440],
+      "credentials": {
+        "smtp": {
+          "id": "REMPLACER_PAR_ID_CREDENTIAL",
+          "name": "SMTP BTS Business School"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Candidature": {
+      "main": [
+        [
+          { "node": "Répondre OK au navigateur", "type": "main", "index": 0 },
+          { "node": "Convertir PDF en binaire",  "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Convertir PDF en binaire": {
+      "main": [
+        [
+          { "node": "Envoyer email + PDF", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

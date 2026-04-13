@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossier de Candidature — BTS Business School</title>
+    <link rel="icon" type="image/png" href="logo-bts.png">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #153353;
+            --orange: #FEB753;
+            --dark-blue: #0e2540;
+            --text-gray: #646464;
+            --white: #ffffff;
+            --border: #e0e0e0;
+            --light-bg: #f4f5fb;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--navy);
+            color: white;
+            padding: 18px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 24px rgba(0,0,0,0.3);
+        }
+
+        .header-inner {
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 0 24px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-area img {
+            height: 62px;
+            width: auto;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+        }
+
+        .logo-area h1 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .logo-area h1 span { color: var(--orange); }
+
+        .logo-area p {
+            font-size: 0.78rem;
+            opacity: 0.7;
+            font-weight: 300;
+            margin-top: 2px;
+        }
+
+        .header-badge {
+            text-align: right;
+            font-size: 0.78rem;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .header-badge strong {
+            display: block;
+            color: var(--orange);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        /* Progress bar */
+        .progress-strip {
+            background: var(--dark-blue);
+            padding: 8px 24px;
+        }
+
+        .progress-strip-inner {
+            max-width: 940px;
+            margin: 0 auto;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .prog-seg {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 2px;
+            transition: background 0.4s;
+        }
+
+        .prog-seg.active { background: var(--orange); }
+
+        /* ── MAIN ── */
+        main {
+            max-width: 940px;
+            margin: 36px auto 60px;
+            padding: 0 20px;
+        }
+
+        /* Intro card */
+        .intro-card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            border-left: 5px solid var(--orange);
+            box-shadow: 0 2px 16px rgba(30,26,85,0.07);
+        }
+
+        .intro-card h2 {
+            color: var(--navy);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .intro-card p {
+            color: var(--text-gray);
+            font-size: 0.92rem;
+        }
+
+        .intro-card p strong { color: var(--orange); }
+
+        /* ── SECTION ── */
+        .form-section {
+            background: white;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(30,26,85,0.07);
+        }
+
+        .section-header {
+            background: var(--navy);
+            color: white;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sec-num {
+            background: var(--orange);
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 0.82rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .notice-badge {
+            background: rgba(250,186,1,0.2);
+            color: var(--orange);
+            border: 1px solid rgba(250,186,1,0.5);
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            margin-left: 10px;
+            letter-spacing: 0.3px;
+        }
+
+        .section-body {
+            padding: 28px 30px;
+        }
+
+        /* ── GRID ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .col-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .full { grid-column: 1 / -1; }
+
+        /* ── FIELD ── */
+        .field { display: flex; flex-direction: column; gap: 5px; }
+
+        .field label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--navy);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .req { color: var(--orange); margin-left: 2px; }
+
+        .field input,
+        .field select,
+        .field textarea {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 11px 14px;
+            font-family: 'Barlow', sans-serif;
+            font-size: 0.94rem;
+            color: #333;
+            background: #fafafa;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(30,26,85,0.09);
+            background: white;
+        }
+
+        .field textarea { resize: vertical; min-height: 100px; }
+
+        /* ── RADIO ── */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .radio-opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-opt input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--navy);
+            cursor: pointer;
+        }
+
+        .radio-opt span { font-size: 0.95rem; color: #444; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            border: none;
+            border-top: 1.5px solid #eee;
+            margin: 24px 0;
+        }
+
+        /* ── SUBSECTION ── */
+        .subsection {
+            background: #f0f2fc;
+            border-radius: 10px;
+            padding: 20px 22px;
+            margin-top: 14px;
+            border-left: 3px solid var(--navy);
+        }
+
+        .subsection h3 {
+            color: var(--navy);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── CONDITIONAL ── */
+        .cond { display: none; }
+        .cond.show { display: block; }
+
+        /* ── INFO BOX ── */
+        .info-box {
+            background: #fffbea;
+            border: 1.5px solid #f5c518;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.86rem;
+            color: #7a6000;
+            margin-top: 12px;
+        }
+
+        /* ── QCM ── */
+        .helper-text {
+            font-size: 0.84rem;
+            color: var(--text-gray);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .qcm-q {
+            background: #f9f9fb;
+            border: 1.5px solid #e4e4ee;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .qcm-q:hover { border-color: #bbb8e0; }
+
+        .q-text {
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 14px;
+            font-size: 0.97rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .q-num {
+            background: var(--orange);
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 0.78rem;
+            min-width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .qcm-opts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .qcm-opt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-size: 0.93rem;
+            color: #444;
+        }
+
+        .qcm-opt:hover { border-color: var(--navy); background: #eef0ff; }
+
+        .qcm-opt input[type="radio"] {
+            accent-color: var(--navy);
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .qcm-opt:has(input:checked) {
+            border-color: var(--navy);
+            background: #e8eaff;
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        /* Score display */
+        .score-box {
+            display: none;
+            background: linear-gradient(135deg, var(--navy), var(--dark-blue));
+            color: white;
+            border-radius: 10px;
+            padding: 16px 24px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .score-box .s-num {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--orange);
+            display: block;
+        }
+
+        .score-box .s-label { font-size: 0.85rem; opacity: 0.75; }
+
+        /* ── FILE UPLOAD ── */
+        .file-zone {
+            border: 2px dashed #c8c8de;
+            border-radius: 10px;
+            padding: 22px 16px;
+            text-align: center;
+            background: #fafafd;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .file-zone:hover { border-color: var(--navy); background: #eef0ff; }
+
+        .file-zone input[type="file"] { display: none; }
+
+        .file-icon { font-size: 2rem; margin-bottom: 6px; }
+
+        .file-label-main {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .file-label-sub {
+            font-size: 0.78rem;
+            color: var(--text-gray);
+            margin-top: 3px;
+        }
+
+        .file-name-display {
+            font-size: 0.8rem;
+            color: #28a745;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* ── CHECKBOXES ── */
+        .check-group { display: flex; flex-direction: column; gap: 14px; }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--navy);
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .check-item span { font-size: 0.94rem; color: #444; line-height: 1.5; }
+
+        /* ── SUBMIT ── */
+        .submit-area {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+
+        .btn-submit {
+            background: var(--orange);
+            color: var(--navy);
+            border: none;
+            padding: 18px 64px;
+            font-family: 'Barlow', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 22px rgba(250,186,1,0.4);
+        }
+
+        .btn-submit:hover {
+            background: #e6aa00;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 28px rgba(250,186,1,0.5);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .submit-note {
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            margin-top: 14px;
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--navy);
+            color: rgba(255,255,255,0.55);
+            text-align: center;
+            padding: 18px;
+            font-size: 0.8rem;
+        }
+
+        footer strong { color: white; }
+        footer span { color: var(--orange); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+            .form-grid, .col-3, .qcm-opts { grid-template-columns: 1fr; }
+            .section-body { padding: 20px 16px; }
+            .header-inner { flex-direction: column; text-align: center; }
+        }
+
+        /* ── PRINT ── */
+        @media print {
+            header { position: static; }
+            .progress-strip { display: none; }
+            .btn-submit { display: none; }
+            .form-section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════════ HEADER ════════════════ -->
+<header>
+    <div class="header-inner">
+        <div class="logo-area">
+            <img src="logo-bts.png" alt="Logo BTS Business School">
+            <div>
+                <h1>BTS <span>Business</span> School</h1>
+                <p>Dossier de Candidature — Formation en Apprentissage</p>
+            </div>
+        </div>
+        <div class="header-badge">
+            Campagne d'admission<br>
+            <strong>2026 – 2027</strong>
+        </div>
+    </div>
+    <div class="progress-strip">
+        <div class="progress-strip-inner" id="progStrip">
+            <!-- generated by JS -->
+        </div>
+    </div>
+</header>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main>
+
+    <div class="intro-card">
+        <h2>Bienvenue dans votre dossier de candidature</h2>
+        <p>Merci de remplir ce formulaire avec soin. Toutes les informations sont traitées de manière confidentielle. Les champs marqués d'un <strong>*</strong> sont obligatoires. Une fois complété, cliquez sur <strong>"Envoyer ma candidature"</strong> en bas de page.</p>
+    </div>
+
+    <form id="mainForm" novalidate>
+
+        <!-- ══════════════ PARTIE 1 ══════════════ -->
+        <div class="form-section" data-sec="1">
+            <div class="section-header">
+                <div class="sec-num">1</div>
+                <h2>Informations Candidat</h2>
+            </div>
+            <div class="section-body">
+                <div class="form-grid">
+
+                    <div class="field full">
+                        <label>Civilité <span class="req">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-opt"><input type="radio" name="civilite" value="madame" required><span>Madame</span></label>
+                            <label class="radio-opt"><input type="radio" name="civilite" value="monsieur"><span>Monsieur</span></label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Nom <span class="req">*</span></label>
+                        <input type="text" name="nom" placeholder="Votre nom de famille" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Prénom <span class="req">*</span></label>
+                        <input type="text" name="prenom" placeholder="Votre prénom" required>
+                    </div>
+
+                    <div class="field full">
+                        <label>Adresse <span class="req">*</span></label>
+                        <input type="text" name="adresse" placeholder="Numéro et nom de rue" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Code Postal <span class="req">*</span></label>
+                        <input type="text" name="code_postal" placeholder="ex. 75001" maxlength="5" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Ville <span class="req">*</span></label>
+                        <input type="text" name="ville" placeholder="Votre ville" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Téléphone <span class="req">*</span></label>
+                        <input type="tel" name="telephone" placeholder="06 00 00 00 00" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Email <span class="req">*</span></label>
+                        <input type="email" name="email" placeholder="votre@email.com" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Nationalité <span class="req">*</span></label>
+                        <input type="text" name="nationalite" placeholder="ex. Française" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Date de Naissance <span class="req">*</span></label>
+                        <input type="date" name="date_naissance" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Lieu de Naissance <span class="req">*</span></label>
+                        <input type="text" name="lieu_naissance" placeholder="Ville de naissance" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Pays de Naissance <span class="req">*</span></label>
+                        <input type="text" name="pays_naissance" placeholder="ex. France" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Situation Familiale</label>
+                        <select name="situation_familiale">
+                            <option value="">-- Sélectionner --</option>
+                            <option>Célibataire</option>
+                            <option>En couple</option>
+                            <option>Marié(e) / Pacsé(e)</option>
+                            <option>Divorcé(e)</option>
+                            <option>Veuf / Veuve</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Numéro de Sécurité Sociale</label>
+                        <input type="text" name="num_secu" placeholder="15 chiffres" maxlength="15">
+                    </div>
+
+                    <div class="field">
+                        <label>Permis de Conduire <span class="req">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-opt"><input type="radio" name="permis" value="oui" required><span>Oui</span></label>
+                            <label class="radio-opt"><input type="radio" name="permis" value="non"><span>Non</span></label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Véhicule Personnel <span class="req">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-opt"><input type="radio" name="vehicule" value="oui" required><span>Oui</span></label>
+                            <label class="radio-opt"><input type="radio" name="vehicule" value="non"><span>Non</span></label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="divider">
+
+                <div style="margin-bottom:6px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:0.6px;">
+                        Situation de Handicap <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="radio-group">
+                    <label class="radio-opt"><input type="radio" name="handicap" value="oui" id="handi_oui"><span>Oui</span></label>
+                    <label class="radio-opt"><input type="radio" name="handicap" value="non" id="handi_non"><span>Non</span></label>
+                </div>
+                <div class="cond" id="block_handicap">
+                    <div class="info-box">
+                        Si vous êtes en situation de handicap, notre équipe pédagogique vous contactera pour adapter votre parcours et votre accueil au sein de l'école.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 2 ══════════════ -->
+        <div class="form-section cond" id="section_mineur" data-sec="2">
+            <div class="section-header">
+                <div class="sec-num">2</div>
+                <h2>Situation Familiale <span class="notice-badge">Si Mineur</span></h2>
+            </div>
+            <div class="section-body">
+                <p class="helper-text">À remplir uniquement si le/la candidat(e) est mineur(e) au moment de l'inscription.</p>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Nom et Prénom de la Mère</label>
+                        <input type="text" name="mere_nom" placeholder="Nom et prénom">
+                    </div>
+                    <div class="field">
+                        <label>Nom et Prénom du Père</label>
+                        <input type="text" name="pere_nom" placeholder="Nom et prénom">
+                    </div>
+                    <div class="field full">
+                        <label>Adresse des Parents</label>
+                        <input type="text" name="parents_adresse" placeholder="Adresse complète">
+                    </div>
+                    <div class="field">
+                        <label>Code Postal</label>
+                        <input type="text" name="parents_cp" placeholder="ex. 75001" maxlength="5">
+                    </div>
+                    <div class="field">
+                        <label>Téléphone des Parents</label>
+                        <input type="tel" name="parents_tel" placeholder="06 00 00 00 00">
+                    </div>
+                    <div class="field">
+                        <label>Profession de la Mère</label>
+                        <input type="text" name="prof_mere" placeholder="ex. Infirmière">
+                    </div>
+                    <div class="field">
+                        <label>Profession du Père</label>
+                        <input type="text" name="prof_pere" placeholder="ex. Comptable">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 3 ══════════════ -->
+        <div class="form-section" data-sec="3">
+            <div class="section-header">
+                <div class="sec-num">3</div>
+                <h2>Parcours Scolaire</h2>
+            </div>
+            <div class="section-body">
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label>Baccalauréat <span class="req">*</span></label>
+                        <select name="baccalaureat" required>
+                            <option value="">-- Type de baccalauréat --</option>
+                            <option>Bac Général</option>
+                            <option>Bac Technologique</option>
+                            <option>Bac Professionnel</option>
+                            <option>Bac STMG</option>
+                            <option>Bac ST2S</option>
+                            <option>Bac STI2D</option>
+                            <option>Bac STL</option>
+                            <option>Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Année d'Obtention <span class="req">*</span></label>
+                        <input type="number" name="bac_annee" placeholder="ex. 2023" min="1990" max="2027" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Département d'Obtention</label>
+                        <input type="text" name="bac_departement" placeholder="ex. 75 — Paris">
+                    </div>
+
+                    <div class="field">
+                        <label>Dernier Diplôme Obtenu <span class="req">*</span></label>
+                        <input type="text" name="dernier_diplome" placeholder="ex. BTS MUC, Licence…" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Cycle / Classe Année Dernière</label>
+                        <input type="text" name="classe_prec" placeholder="ex. Terminale, BTS 1ère année…">
+                    </div>
+
+                    <div class="field">
+                        <label>Cycle / Classe Actuel <span class="req">*</span></label>
+                        <input type="text" name="classe_actuelle" placeholder="ex. BTS 2ème année" required>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 4 ══════════════ -->
+        <div class="form-section" data-sec="4">
+            <div class="section-header">
+                <div class="sec-num">4</div>
+                <h2>Test de Positionnement</h2>
+            </div>
+            <div class="section-body">
+
+                <div class="field" style="margin-bottom:20px;">
+                    <label>Quel est votre niveau de connaissance ou d'expérience actuel en lien avec la formation ? <span class="req">*</span></label>
+                    <div class="radio-group" style="margin-top:8px; flex-wrap:wrap; gap:12px;">
+                        <label class="radio-opt"><input type="radio" name="niveau" value="debutant" required><span>Débutant</span></label>
+                        <label class="radio-opt"><input type="radio" name="niveau" value="intermediaire"><span>Intermédiaire</span></label>
+                        <label class="radio-opt"><input type="radio" name="niveau" value="avance"><span>Avancé</span></label>
+                        <label class="radio-opt"><input type="radio" name="niveau" value="expert"><span>Expert</span></label>
+                    </div>
+                </div>
+
+                <div class="field" style="margin-bottom:20px;">
+                    <label>Pourquoi souhaitez-vous suivre cette formation ? <span class="req">*</span></label>
+                    <textarea name="motivation" placeholder="Exprimez vos motivations, ce qui vous a amené à choisir cette formation…" required></textarea>
+                </div>
+
+                <div class="field" style="margin-bottom:20px;">
+                    <label>Quelles compétences ou savoir-faire aimeriez-vous maîtriser à l'issue de cette formation ?</label>
+                    <textarea name="competences_visees" placeholder="Décrivez les compétences que vous souhaitez acquérir…"></textarea>
+                </div>
+
+                <div class="field" style="margin-bottom:20px;">
+                    <label>Y a-t-il des conditions particulières à prendre en compte pour votre apprentissage ?</label>
+                    <textarea name="conditions" placeholder="Temps disponible, environnement, accessibilité, difficultés spécifiques…"></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Décrivez votre projet professionnel <span class="req">*</span></label>
+                    <textarea name="projet_pro" placeholder="Votre projet à court et long terme, le métier visé, le secteur d'activité…" required></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 5 — QCM ══════════════ -->
+        <div class="form-section" data-sec="5">
+            <div class="section-header">
+                <div class="sec-num">5</div>
+                <h2>QCM — Évaluation des Connaissances</h2>
+            </div>
+            <div class="section-body">
+                <p class="helper-text">Répondez de votre mieux à chaque question. Ce questionnaire à choix multiples permet d'évaluer vos connaissances générales et votre niveau. Il n'y a pas de mauvaises réponses dans l'absolu.</p>
+
+                <!-- Q1 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">1</span><span>Quel est le plus grand océan de la planète ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q1" value="a"><span>Océan Arctique</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q1" value="b"><span>Océan Pacifique</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q1" value="c"><span>Océan Indien</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q1" value="d"><span>Océan Atlantique</span></label>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">2</span><span>En quelle année a eu lieu la Révolution française ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q2" value="a"><span>1792</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q2" value="b"><span>1804</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q2" value="c"><span>1776</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q2" value="d"><span>1789</span></label>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">3</span><span>Complétez la suite logique : 3, 6, 12, 24, ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q3" value="a"><span>48</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q3" value="b"><span>42</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q3" value="c"><span>36</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q3" value="d"><span>50</span></label>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">4</span><span>Si tous les chats sont des animaux, et que certains animaux sont des chiens, alors :</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q4" value="a"><span>Aucun chat n'est un chien</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q4" value="b"><span>Tous les chiens sont des chats</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q4" value="c"><span>Tous les chats sont des chiens</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q4" value="d"><span>Il est possible qu'un chat ne soit pas un chien</span></label>
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">5</span><span>Quel est le synonyme du mot "succinct" ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q5" value="a"><span>Détaillé</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q5" value="b"><span>Compliqué</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q5" value="c"><span>Bref</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q5" value="d"><span>Évasif</span></label>
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">6</span><span>Quelle est la phrase correctement orthographiée ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q6" value="a"><span>Elle a oubliée son sac.</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q6" value="b"><span>Il à été surpris.</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q6" value="c"><span>Ils sont allez au marché.</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q6" value="d"><span>Nous avons bien mangé.</span></label>
+                    </div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">7</span><span>Traduisez en anglais : "Je vais à l'école tous les jours."</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q7" value="a"><span>I go to the school all days</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q7" value="b"><span>I go to school every day</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q7" value="c"><span>I am going to school every day</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q7" value="d"><span>I go at school all days</span></label>
+                    </div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">8</span><span>Which sentence is correct?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q8" value="a"><span>She don't like pizza</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q8" value="b"><span>He have two brothers</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q8" value="c"><span>They goes to work</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q8" value="d"><span>We are ready</span></label>
+                    </div>
+                </div>
+
+                <!-- Q9 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">9</span><span>Dans une situation de conflit, quelle est la meilleure attitude ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q9" value="a"><span>Blâmer l'autre pour l'erreur</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q9" value="b"><span>Ignorer le problème</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q9" value="c"><span>Élever la voix pour s'imposer</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q9" value="d"><span>Écouter l'autre et chercher une solution commune</span></label>
+                    </div>
+                </div>
+
+                <!-- Q10 -->
+                <div class="qcm-q">
+                    <div class="q-text"><span class="q-num">10</span><span>Qu'est-ce qu'une qualité essentielle pour bien travailler en équipe ?</span></div>
+                    <div class="qcm-opts">
+                        <label class="qcm-opt"><input type="radio" name="q10" value="a"><span>La compétitivité</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q10" value="b"><span>L'autorité</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q10" value="c"><span>L'indépendance totale</span></label>
+                        <label class="qcm-opt"><input type="radio" name="q10" value="d"><span>L'écoute</span></label>
+                    </div>
+                </div>
+
+                <div class="score-box" id="scoreBox">
+                    <span class="s-num" id="scoreNum">0/10</span>
+                    <span class="s-label">questions répondues</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 6 — SOFT SKILLS ══════════════ -->
+        <div class="form-section" data-sec="6">
+            <div class="section-header">
+                <div class="sec-num">6</div>
+                <h2>Auto-évaluation — Soft Skills</h2>
+            </div>
+            <div class="section-body">
+                <p class="helper-text">Pour chacune des compétences ci-dessous, indiquez votre niveau actuel et ajoutez un commentaire ou exemple concret si vous le souhaitez.</p>
+
+                <!-- SK 1 — Autonomie -->
+                <div style="border:1px solid #e0e4ef; border-radius:8px; padding:16px; margin-bottom:14px; background:#fafbff;">
+                    <p style="font-weight:700; color:var(--navy); margin-bottom:4px;">Autonomie</p>
+                    <p style="font-size:0.82rem; color:#666; margin-bottom:12px;">Capacité à se mobiliser sans attendre d'instruction, à proposer des solutions, à apprendre seul.</p>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Niveau <span class="req">*</span></label>
+                            <select name="sk1_niveau" required>
+                                <option value="">— Choisir —</option>
+                                <option value="1">À améliorer</option>
+                                <option value="2">En développement</option>
+                                <option value="3">Satisfaisant</option>
+                                <option value="4">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Commentaire / Exemple</label>
+                            <input type="text" name="sk1_commentaire" placeholder="Ex : j'ai réalisé seul un projet de…">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SK 2 — Motivation -->
+                <div style="border:1px solid #e0e4ef; border-radius:8px; padding:16px; margin-bottom:14px; background:#fafbff;">
+                    <p style="font-weight:700; color:var(--navy); margin-bottom:4px;">Motivation &amp; clarté du projet</p>
+                    <p style="font-size:0.82rem; color:#666; margin-bottom:12px;">Discours structuré, projet réfléchi, lien clair entre la formation et les objectifs personnels/pro.</p>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Niveau <span class="req">*</span></label>
+                            <select name="sk2_niveau" required>
+                                <option value="">— Choisir —</option>
+                                <option value="1">À améliorer</option>
+                                <option value="2">En développement</option>
+                                <option value="3">Satisfaisant</option>
+                                <option value="4">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Commentaire / Exemple</label>
+                            <input type="text" name="sk2_commentaire" placeholder="Ex : mon projet est de devenir…">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SK 3 — Réactivité -->
+                <div style="border:1px solid #e0e4ef; border-radius:8px; padding:16px; margin-bottom:14px; background:#fafbff;">
+                    <p style="font-weight:700; color:var(--navy); margin-bottom:4px;">Réactivité face aux imprévus</p>
+                    <p style="font-size:0.82rem; color:#666; margin-bottom:12px;">Capacité à s'adapter, à garder son calme et à prendre des initiatives en cas de difficulté ou d'obstacle.</p>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Niveau <span class="req">*</span></label>
+                            <select name="sk3_niveau" required>
+                                <option value="">— Choisir —</option>
+                                <option value="1">À améliorer</option>
+                                <option value="2">En développement</option>
+                                <option value="3">Satisfaisant</option>
+                                <option value="4">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Commentaire / Exemple</label>
+                            <input type="text" name="sk3_commentaire" placeholder="Ex : face à un imprévu, j'ai…">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SK 4 — Posture collaborative -->
+                <div style="border:1px solid #e0e4ef; border-radius:8px; padding:16px; margin-bottom:14px; background:#fafbff;">
+                    <p style="font-weight:700; color:var(--navy); margin-bottom:4px;">Posture collaborative</p>
+                    <p style="font-size:0.82rem; color:#666; margin-bottom:12px;">Attitude en équipe : écoute, participation, esprit d'entraide, respect du cadre collectif.</p>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Niveau <span class="req">*</span></label>
+                            <select name="sk4_niveau" required>
+                                <option value="">— Choisir —</option>
+                                <option value="1">À améliorer</option>
+                                <option value="2">En développement</option>
+                                <option value="3">Satisfaisant</option>
+                                <option value="4">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Commentaire / Exemple</label>
+                            <input type="text" name="sk4_commentaire" placeholder="Ex : lors d'un travail de groupe, j'ai…">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SK 5 — Remise en question -->
+                <div style="border:1px solid #e0e4ef; border-radius:8px; padding:16px; margin-bottom:4px; background:#fafbff;">
+                    <p style="font-weight:700; color:var(--navy); margin-bottom:4px;">Capacité de remise en question</p>
+                    <p style="font-size:0.82rem; color:#666; margin-bottom:12px;">Réceptivité à la critique, aptitude à se corriger, à tirer parti des retours constructifs.</p>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Niveau <span class="req">*</span></label>
+                            <select name="sk5_niveau" required>
+                                <option value="">— Choisir —</option>
+                                <option value="1">À améliorer</option>
+                                <option value="2">En développement</option>
+                                <option value="3">Satisfaisant</option>
+                                <option value="4">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Commentaire / Exemple</label>
+                            <input type="text" name="sk5_commentaire" placeholder="Ex : suite à un retour, j'ai modifié…">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 7 ══════════════ -->
+        <div class="form-section" data-sec="7">
+            <div class="section-header">
+                <div class="sec-num">7</div>
+                <h2>Entreprise d'Accueil</h2>
+            </div>
+            <div class="section-body">
+
+                <div style="margin-bottom:8px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:0.6px;">
+                        Avez-vous trouvé votre alternance ? <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="radio-group" style="margin-bottom:6px;">
+                    <label class="radio-opt"><input type="radio" name="alternance" value="oui" id="alt_oui" required><span>Oui</span></label>
+                    <label class="radio-opt"><input type="radio" name="alternance" value="non" id="alt_non"><span>Non</span></label>
+                </div>
+
+                <!-- OUI -->
+                <div class="cond" id="block_alt_oui">
+                    <div class="subsection">
+                        <h3>Coordonnées de l'Entreprise</h3>
+                        <div class="form-grid">
+                            <div class="field full">
+                                <label>Nom de l'Entreprise</label>
+                                <input type="text" name="ent_nom" placeholder="Raison sociale">
+                            </div>
+                            <div class="field">
+                                <label>Nom et Prénom du Contact</label>
+                                <input type="text" name="ent_contact_nom" placeholder="Nom et prénom">
+                            </div>
+                            <div class="field">
+                                <label>Fonction</label>
+                                <input type="text" name="ent_contact_fonction" placeholder="ex. Directeur RH, Tuteur…">
+                            </div>
+                            <div class="field">
+                                <label>Téléphone</label>
+                                <input type="tel" name="ent_tel" placeholder="01 00 00 00 00">
+                            </div>
+                            <div class="field">
+                                <label>Email</label>
+                                <input type="email" name="ent_email" placeholder="contact@entreprise.fr">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NON -->
+                <div class="cond" id="block_alt_non">
+                    <div class="subsection">
+                        <h3>Contacts Potentiels d'Entreprises</h3>
+                        <p class="helper-text" style="margin-bottom:14px;">Avez-vous des contacts d'entreprises pour effectuer votre alternance ?</p>
+                        <div class="form-grid">
+                            <div class="field full">
+                                <label>Nom de l'Entreprise</label>
+                                <input type="text" name="prosp_ent" placeholder="Raison sociale (si contact identifié)">
+                            </div>
+                            <div class="field">
+                                <label>Personne à Contacter</label>
+                                <input type="text" name="prosp_contact" placeholder="Nom et prénom">
+                            </div>
+                            <div class="field">
+                                <label>Téléphone</label>
+                                <input type="tel" name="prosp_tel" placeholder="01 00 00 00 00">
+                            </div>
+                            <div class="field full">
+                                <label>Email</label>
+                                <input type="email" name="prosp_email" placeholder="contact@entreprise.fr">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════ PARTIE 8 ══════════════ -->
+        <div class="form-section" data-sec="8">
+            <div class="section-header">
+                <div class="sec-num">8</div>
+                <h2>Pièces Jointes &amp; Déclarations</h2>
+            </div>
+            <div class="section-body">
+                <p class="helper-text">Formats acceptés : PDF, JPG, PNG — Taille maximale par fichier : 5 Mo</p>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label>Curriculum Vitae <span class="req">*</span></label>
+                        <div class="file-zone" onclick="document.getElementById('f_cv').click()">
+                            <div class="file-icon">📄</div>
+                            <div class="file-label-main">Cliquez pour déposer votre CV</div>
+                            <div class="file-label-sub">PDF, DOC — Max 5 Mo</div>
+                            <input type="file" id="f_cv" name="f_cv" accept=".pdf,.doc,.docx" onchange="showFile(this,'fn_cv')">
+                            <div class="file-name-display" id="fn_cv"></div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Copie Pièce d'Identité <span class="req">*</span></label>
+                        <div class="file-zone" onclick="document.getElementById('f_id').click()">
+                            <div class="file-icon">🪪</div>
+                            <div class="file-label-main">Cliquez pour déposer votre pièce d'identité</div>
+                            <div class="file-label-sub">PDF, JPG, PNG — Max 5 Mo</div>
+                            <input type="file" id="f_id" name="f_id" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'fn_id')">
+                            <div class="file-name-display" id="fn_id"></div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Attestation Sécurité Sociale <span class="req">*</span></label>
+                        <div class="file-zone" onclick="document.getElementById('f_secu').click()">
+                            <div class="file-icon">📋</div>
+                            <div class="file-label-main">Cliquez pour déposer l'attestation</div>
+                            <div class="file-label-sub">PDF, JPG, PNG — Max 5 Mo</div>
+                            <input type="file" id="f_secu" name="f_secu" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'fn_secu')">
+                            <div class="file-name-display" id="fn_secu"></div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Journée Défense et Citoyenneté <span class="notice-badge">– 26 ans</span></label>
+                        <div class="file-zone" onclick="document.getElementById('f_jdc').click()">
+                            <div class="file-icon">🎖️</div>
+                            <div class="file-label-main">Cliquez pour déposer l'attestation JDC</div>
+                            <div class="file-label-sub">PDF, JPG, PNG — Max 5 Mo</div>
+                            <input type="file" id="f_jdc" name="f_jdc" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'fn_jdc')">
+                            <div class="file-name-display" id="fn_jdc"></div>
+                        </div>
+                    </div>
+
+                    <div class="field full">
+                        <label>Bulletins de Notes — 2 Dernières Années <span class="req">*</span></label>
+                        <div class="file-zone" onclick="document.getElementById('f_bulletins').click()">
+                            <div class="file-icon">📊</div>
+                            <div class="file-label-main">Cliquez pour déposer vos bulletins</div>
+                            <div class="file-label-sub">Plusieurs fichiers possibles — PDF, JPG, PNG</div>
+                            <input type="file" id="f_bulletins" name="f_bulletins" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="showFile(this,'fn_bulletins')">
+                            <div class="file-name-display" id="fn_bulletins"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="divider">
+
+                <p style="font-size:0.8rem; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:16px;">Engagements du Candidat</p>
+                <div class="check-group">
+                    <label class="check-item">
+                        <input type="checkbox" name="decl_1" id="decl_1">
+                        <span>Je demande au jury d'admission d'examiner ma candidature à la formation.</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="decl_2" id="decl_2">
+                        <span>Je certifie exacts les renseignements fournis dans ce dossier.</span>
+                    </label>
+                    <label class="check-item">
+                        <input type="checkbox" name="decl_3">
+                        <span>J'accepte d'être recontacté(e) par l'école dans le cadre de ma candidature.</span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="submit-area">
+            <button type="submit" class="btn-submit" id="btnSubmit">Envoyer ma candidature</button>
+            <p class="submit-note">
+                En soumettant ce formulaire, vous acceptez que vos données soient utilisées dans le cadre de votre candidature.<br>
+                Conformément au RGPD, vous disposez d'un droit d'accès et de rectification.
+            </p>
+        </div>
+
+    </form>
+</main>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+    <strong>BTS <span>Business</span> School</strong> — Dossier de Candidature Apprentissage<br>
+    Tous droits réservés &copy; 2026
+</footer>
+
+<script>
+    /* ══════════════════════════════════════════════════════════
+       CONFIGURATION — collez ici l'URL webhook de votre n8n
+       ══════════════════════════════════════════════════════════ */
+    const WEBHOOK_URL = 'https://n8n.srv959772.hstgr.cloud/webhook/candidature-bts';
+    /* ══════════════════════════════════════════════════════════ */
+
+    /* ── Progress bar ── */
+    const totalSecs = 8;
+    const strip = document.getElementById('progStrip');
+    for (let i = 1; i <= totalSecs; i++) {
+        const seg = document.createElement('div');
+        seg.className = 'prog-seg';
+        seg.id = 'seg' + i;
+        strip.appendChild(seg);
+    }
+
+    function updateProgress() {
+        const mid = window.scrollY + window.innerHeight * 0.5;
+        document.querySelectorAll('.form-section').forEach((sec, idx) => {
+            const top = sec.getBoundingClientRect().top + window.scrollY;
+            const seg = document.getElementById('seg' + (idx + 1));
+            if (seg) seg.classList.toggle('active', mid >= top);
+        });
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    /* ── File name display ── */
+    function showFile(input, targetId) {
+        const t = document.getElementById(targetId);
+        if (input.files.length > 0) {
+            const names = Array.from(input.files).map(f => f.name).join(', ');
+            t.textContent = '✓ ' + names;
+        } else {
+            t.textContent = '';
+        }
+    }
+
+    /* ── Conditional: handicap ── */
+    document.querySelectorAll('input[name="handicap"]').forEach(r => {
+        r.addEventListener('change', () => {
+            document.getElementById('block_handicap').classList.toggle('show', r.value === 'oui' && r.checked);
+        });
+    });
+
+    /* ── Logique âge / section mineur ── */
+    function resetSectionMineur() {
+        const sec = document.getElementById('section_mineur');
+        sec.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+            else el.value = '';
+        });
+    }
+
+    document.querySelector('input[name="date_naissance"]').addEventListener('change', function () {
+        const sec = document.getElementById('section_mineur');
+        if (!this.value) { sec.classList.remove('show'); return; }
+
+        const birth = new Date(this.value);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const mDiff = today.getMonth() - birth.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && today.getDate() < birth.getDate())) age--;
+
+        if (age < 18) {
+            sec.classList.add('show');
+        } else {
+            sec.classList.remove('show');
+            resetSectionMineur();
+        }
+    });
+
+    /* ── Conditional: alternance ── */
+    document.getElementById('alt_oui').addEventListener('change', () => {
+        document.getElementById('block_alt_oui').classList.add('show');
+        document.getElementById('block_alt_non').classList.remove('show');
+    });
+    document.getElementById('alt_non').addEventListener('change', () => {
+        document.getElementById('block_alt_non').classList.add('show');
+        document.getElementById('block_alt_oui').classList.remove('show');
+    });
+
+    /* ── QCM live counter ── */
+    document.querySelectorAll('.qcm-q input[type="radio"]').forEach(r => {
+        r.addEventListener('change', () => {
+            let count = 0;
+            for (let i = 1; i <= 10; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) count++;
+            }
+            const box = document.getElementById('scoreBox');
+            document.getElementById('scoreNum').textContent = count + '/10';
+            box.style.display = count > 0 ? 'block' : 'none';
+        });
+    });
+
+    /* ── Génération PDF ── */
+    function generatePDF(fd) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+        const RED   = [200, 30, 30];
+        const NAVY  = [21, 51, 83];
+        const WHITE = [255, 255, 255];
+        const BLACK = [0, 0, 0];
+        const LGRAY = [220, 220, 220];
+
+        const PW = 210, ML = 18, MR = 18;
+        const CW = PW - ML - MR; // 174 mm
+        let y = 16;
+
+        function newPage() { doc.addPage(); y = 16; }
+        function chk(h) { if (y + h > 278) newPage(); }
+
+        function secHeader(title) {
+            chk(10);
+            doc.setFillColor(...RED);
+            doc.rect(ML, y, CW, 7, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(...WHITE);
+            doc.text(title, ML + 3, y + 5);
+            doc.setTextColor(...BLACK);
+            y += 13;
+        }
+
+        function fieldLine(label, value, x, w) {
+            x = x || ML; w = w || CW;
+            const lh = 5.5;
+            chk(lh);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...NAVY);
+            doc.text(label + ' :', x, y);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...BLACK);
+            const lw = doc.getTextWidth(label + ' :') + 2;
+            const avail = w - lw - 1;
+            const lines = doc.splitTextToSize(value || '', avail);
+            doc.text(lines, x + lw, y);
+            y += Math.max(lines.length, 1) * lh;
+        }
+
+        function twoFields(l1, v1, l2, v2) {
+            const hw = CW / 2 - 2;
+            const lh = 5.5;
+            chk(lh);
+            // Left
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+            doc.text(l1 + ' :', ML, y);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
+            doc.text(doc.splitTextToSize(v1 || '', hw - doc.getTextWidth(l1 + ' :') - 2)[0] || '', ML + doc.getTextWidth(l1 + ' :') + 2, y);
+            // Right
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(...NAVY);
+            doc.text(l2 + ' :', ML + CW / 2, y);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
+            doc.text(doc.splitTextToSize(v2 || '', hw - doc.getTextWidth(l2 + ' :') - 2)[0] || '', ML + CW / 2 + doc.getTextWidth(l2 + ' :') + 2, y);
+            y += lh;
+        }
+
+        function separator() {
+            chk(4);
+            doc.setDrawColor(...LGRAY);
+            doc.line(ML, y - 1, ML + CW, y - 1);
+            y += 2;
+        }
+
+        // ══════════════ PAGE 1 ══════════════
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.setTextColor(...NAVY);
+        doc.text('BTS BUSINESS SCHOOL', PW / 2, y, { align: 'center' });
+        y += 8;
+        doc.setFontSize(10);
+        doc.text("DOSSIER D'INSCRIPTION N\xB0 : _______________", PW / 2, y, { align: 'center' });
+        y += 4;
+        doc.setDrawColor(...LGRAY);
+        doc.line(ML + 20, y, PW - MR - 20, y);
+        y += 6;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(...BLACK);
+        ['Alternance', "Contrat d'apprentissage", 'Centre de formation :', 'Rentr\xE9e : 2026-2027', 'Programme :'].forEach(t => {
+            doc.text(t, PW / 2, y, { align: 'center' }); y += 5;
+        });
+        y += 3;
+
+        // ETAT CIVIL
+        secHeader('ETAT CIVIL');
+        twoFields('Civilit\xE9', fd.civilite === 'madame' ? 'Madame' : fd.civilite === 'monsieur' ? 'Monsieur' : '', 'Nationalit\xE9', fd.nationalite);
+        twoFields('Nom', fd.nom, 'Pr\xE9nom', fd.prenom);
+        twoFields('Date de naissance', fd.date_naissance ? new Date(fd.date_naissance).toLocaleDateString('fr-FR') : '', 'Pays de naissance', fd.pays_naissance);
+        twoFields('Ville de naissance', fd.lieu_naissance, 'Code postal de naissance', '');
+        twoFields('Situation familiale', fd.situation_familiale, 'Portable', fd.telephone);
+        fieldLine('Adresse', [fd.adresse, fd.code_postal, fd.ville].filter(Boolean).join(', '));
+        fieldLine('E-mail', fd.email);
+        y += 2;
+
+        // HANDICAP
+        secHeader('HANDICAP');
+        fieldLine("Situation d'handicap", fd.handicap === 'oui' ? 'Oui' : fd.handicap === 'non' ? 'Non' : '');
+        y += 2;
+
+        // ENTREPRISE D'ACCUEIL
+        secHeader("ENTREPRISE D'ACCUEIL");
+        if (fd.alternance === 'oui') {
+            fieldLine('Entreprise', fd.ent_nom);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+            doc.text("Contact dans l'entreprise", ML, y); doc.setTextColor(...BLACK); y += 5.5;
+            twoFields('Nom', (fd.ent_contact_nom || '').split(' ')[0] || '', 'Pr\xE9nom', (fd.ent_contact_nom || '').split(' ').slice(1).join(' ') || '');
+            fieldLine('Fonction', fd.ent_contact_fonction);
+            twoFields('T\xE9l\xE9phone', fd.ent_tel, 'Email', fd.ent_email);
+        } else {
+            fieldLine('Entreprise', 'Alternance non encore trouv\xE9e');
+            if (fd.prosp_ent) {
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+                doc.text('Contact prospect :', ML, y); doc.setTextColor(...BLACK); y += 5.5;
+                fieldLine('Entreprise prospect', fd.prosp_ent);
+                twoFields('Contact', fd.prosp_contact, 'T\xE9l\xE9phone', fd.prosp_tel);
+                fieldLine('Email', fd.prosp_email);
+            }
+        }
+
+        // ══════════════ PAGE 2 ══════════════
+        newPage();
+
+        secHeader('CONTRAT');
+        fieldLine('D\xE9tail du contrat', '');
+        y += 6;
+
+        secHeader('FORMATION');
+        twoFields('Baccalaur\xE9at', fd.baccalaureat, "Ann\xE9e d'obtention", fd.bac_annee);
+        fieldLine("D\xE9partement d'obtention", fd.bac_departement);
+        fieldLine('Situation avant ce contrat', '');
+        fieldLine('Dernier dipl\xF4me obtenu', fd.dernier_diplome);
+        twoFields("Cycle ou classe de l'ann\xE9e derni\xE8re", fd.classe_prec, 'Cycle ou classe actuel', fd.classe_actuelle);
+        fieldLine('Intitul\xE9 pr\xE9cis du dernier dipl\xF4me pr\xE9par\xE9', '');
+        y += 4;
+
+        secHeader('EXP\xC9RIENCES PROFESSIONNELLES');
+        fieldLine('Exp\xE9riences professionnelles pr\xE9c\xE9dentes', '');
+        y += 4;
+
+        secHeader('PERSONNE \xC0 CONTACTER EN CAS D\'URGENCE');
+        fieldLine('Statut', '');
+        twoFields('Nom', '', 'Pr\xE9nom', '');
+        fieldLine('Adresse', '');
+        fieldLine('T\xE9l\xE9phone', '');
+        y += 4;
+
+        secHeader('IDENTIFICATION SOCIALE');
+        fieldLine('Num\xE9ro de s\xE9curit\xE9 sociale', fd.num_secu);
+        fieldLine('R\xE9gime social', '');
+        y += 4;
+
+        secHeader('SPORTIF DE HAUT NIVEAU');
+        fieldLine("Inscrit(e) sur la liste des sportifs de haut niveau", '');
+        y += 4;
+
+        secHeader("CR\xC9ATION OU REPRISE D'ENTREPRISE");
+        fieldLine("Projet de cr\xE9ation ou reprise d'entreprise", '');
+
+        // ══════════════ PAGE 3 ══════════════
+        newPage();
+
+        secHeader("AUTORISATION DE CESSION DE DROIT \xC0 L'IMAGE");
+        fieldLine("Autorise la cession de droit \xE0 l'image", fd.decl_3 ? 'Oui' : 'Non (non coch\xE9)');
+        y += 10;
+
+        // ══════════════ PAGE 4 — QCM ══════════════
+        newPage();
+
+        secHeader('QCM');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(...NAVY);
+        doc.text('Total des points : ______ / 10', ML, y);
+        doc.setTextColor(...BLACK);
+        y += 9;
+
+        const qcmData = [
+            { n: 'q1',  q: 'Quel est le plus grand oc\xE9an de la plan\xE8te ?',
+              opts: ['Oc\xE9an Arctique', 'Oc\xE9an Pacifique', 'Oc\xE9an Indien', 'Oc\xE9an Atlantique'] },
+            { n: 'q2',  q: 'En quelle ann\xE9e a eu lieu la R\xE9volution fran\xE7aise ?',
+              opts: ['1792', '1804', '1776', '1789'] },
+            { n: 'q3',  q: 'Compl\xE9tez la suite logique : 3, 6, 12, 24, ?',
+              opts: ['48', '42', '36', '50'] },
+            { n: 'q4',  q: 'Si tous les chats sont des animaux, et que certains animaux sont des chiens, alors :',
+              opts: ["Aucun chat n'est un chien", 'Tous les chiens sont des chats', 'Tous les chats sont des chiens', "Il est possible qu'un chat ne soit pas un chien"] },
+            { n: 'q5',  q: 'Quel est le synonyme du mot "succinct" ?',
+              opts: ['D\xE9taill\xE9', 'Compliqu\xE9', 'Bref', '\xC9vasif'] },
+            { n: 'q6',  q: 'Quelle est la phrase correctement orthographi\xE9e ?',
+              opts: ['Elle a oubli\xE9e son sac.', 'Il \xE0 \xE9t\xE9 surpris.', 'Ils sont allez au march\xE9.', 'Nous avons bien mang\xE9.'] },
+            { n: 'q7',  q: 'Traduisez en anglais : "Je vais \xE0 l\'\xE9cole tous les jours."',
+              opts: ['I go to the school all days', 'I go to school every day', 'I am going to school every day', 'I go at school all days'] },
+            { n: 'q8',  q: 'Which sentence is correct?',
+              opts: ["She don't like pizza", 'He have two brothers', 'They goes to work', 'We are ready'] },
+            { n: 'q9',  q: 'Dans une situation de conflit, quelle est la meilleure attitude ?',
+              opts: ["Bl\xE2mer l'autre pour l'erreur", 'Ignorer le probl\xE8me', "Élever la voix pour s'imposer", "\xC9couter l'autre et chercher une solution commune"] },
+            { n: 'q10', q: "Qu'est-ce qu'une qualit\xE9 essentielle pour bien travailler en \xE9quipe ?",
+              opts: ['La comp\xE9titivit\xE9', "L'autorit\xE9", "L'ind\xE9pendance totale", "L'\xE9coute"] },
+        ];
+
+        const LETTERS = ['a', 'b', 'c', 'd'];
+        const hw = CW / 2;
+
+        qcmData.forEach((q, idx) => {
+            // estimate height
+            const qLines = doc.splitTextToSize((idx + 1) + '. ' + q.q, CW);
+            // max option lines per row
+            const r0h = Math.max(
+                doc.splitTextToSize(q.opts[0], hw - 10).length,
+                doc.splitTextToSize(q.opts[1], hw - 10).length) * 4.5;
+            const r1h = Math.max(
+                doc.splitTextToSize(q.opts[2], hw - 10).length,
+                doc.splitTextToSize(q.opts[3], hw - 10).length) * 4.5;
+            const totalH = qLines.length * 5 + 4 + r0h + r1h + 6;
+            chk(totalH);
+
+            // Question text
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...NAVY);
+            doc.text(qLines, ML, y);
+            y += qLines.length * 5 + 3;
+
+            // Options — 2×2 grid
+            const userAns = fd[q.n];
+            [[0, 1], [2, 3]].forEach(pair => {
+                const linesL = doc.splitTextToSize(q.opts[pair[0]], hw - 10);
+                const linesR = doc.splitTextToSize(q.opts[pair[1]], hw - 10);
+                const rowH = Math.max(linesL.length, linesR.length) * 4.5;
+
+                pair.forEach(oi => {
+                    const ox = ML + (oi % 2) * hw;
+                    const letter = LETTERS[oi];
+                    const sel = (userAns === letter);
+                    const lines = doc.splitTextToSize(q.opts[oi], hw - 10);
+
+                    if (sel) {
+                        doc.setFillColor(...RED);
+                        doc.circle(ox + 3, y - 1.5, 2, 'F');
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor(...RED);
+                    } else {
+                        doc.setDrawColor(...LGRAY);
+                        doc.circle(ox + 3, y - 1.5, 2, 'S');
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(80, 80, 80);
+                    }
+                    doc.setFontSize(8.5);
+                    doc.text(lines, ox + 7, y);
+                });
+                doc.setTextColor(...BLACK);
+                y += rowH + 1;
+            });
+            y += 4;
+        });
+
+        // ══════════════ PAGE 5 — TEST DE POSITIONNEMENT ══════════════
+        newPage();
+
+        secHeader('TEST DE POSITIONNEMENT');
+        const niveauMap = { debutant: 'D\xE9butant', intermediaire: 'Interm\xE9diaire', avance: 'Avanc\xE9', expert: 'Expert' };
+
+        function bigField(label, value) {
+            chk(10);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+            const lLines = doc.splitTextToSize(label, CW);
+            doc.text(lLines, ML, y); y += lLines.length * 5 + 1;
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
+            const vLines = doc.splitTextToSize(value || '', CW);
+            chk(vLines.length * 4.5 + 6);
+            doc.text(vLines, ML, y); y += vLines.length * 4.5 + 7;
+        }
+
+        bigField("Niveau de connaissance ou d'exp\xE9rience actuel en lien avec la formation :", niveauMap[fd.niveau] || '');
+        bigField('Pourquoi souhaitez-vous suivre cette formation ?', fd.motivation);
+        bigField("Quelles comp\xE9tences ou savoir-faire aimeriez-vous ma\xEEtriser \xE0 l'issue de cette formation ?", fd.competences_visees);
+        bigField("Y a-t-il des conditions particuli\xE8res \xE0 prendre en compte pour votre apprentissage ?", fd.conditions);
+        bigField('Pouvez-vous nous d\xE9tailler votre projet professionnel ?', fd.projet_pro);
+        separator();
+
+        // COMPÉTENCES table
+        secHeader('COMP\xC9TENCES');
+        const cols = [38, 72, 22, CW - 38 - 72 - 22]; // widths
+        const colX = [ML, ML + 38, ML + 110, ML + 132];
+
+        // Table header
+        chk(9);
+        doc.setFillColor(...RED);
+        doc.rect(ML, y, CW, 8, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...WHITE);
+        ['Soft Skill', 'Description de la comp\xE9tence observ\xE9e', 'Niveau', 'Commentaires'].forEach((h, i) => {
+            doc.text(h, colX[i] + 2, y + 5.5);
+        });
+        doc.setTextColor(...BLACK);
+        y += 8;
+
+        const niveauLabels = { '1': '\xC0 am\xE9liorer', '2': 'En d\xE9veloppement', '3': 'Satisfaisant', '4': 'Excellent' };
+
+        const skills = [
+            { name: 'Autonomie',             desc: "Capacit\xE9 \xE0 se mobiliser sans attendre d'instruction, \xE0 proposer des solutions, \xE0 apprendre seul",   nKey: 'sk1_niveau', cKey: 'sk1_commentaire' },
+            { name: 'Motivation & clart\xE9 du projet', desc: 'Discours structur\xE9, projet r\xE9fl\xE9chi, lien clair entre la formation et les objectifs personnels/pro', nKey: 'sk2_niveau', cKey: 'sk2_commentaire' },
+            { name: 'R\xE9activit\xE9 face aux impr\xE9vus', desc: "Capacit\xE9 \xE0 s'adapter, \xE0 garder son calme et \xE0 prendre des initiatives en cas de difficult\xE9 ou d'obstacle", nKey: 'sk3_niveau', cKey: 'sk3_commentaire' },
+            { name: 'Posture collaborative', desc: "Attitude en \xE9quipe : \xE9coute, participation, esprit d'entraide, respect du cadre collectif",                  nKey: 'sk4_niveau', cKey: 'sk4_commentaire' },
+            { name: 'Capacit\xE9 de remise en question', desc: "R\xE9ceptivit\xE9 \xE0 la critique, aptitude \xE0 se corriger, \xE0 tirer parti des retours constructifs", nKey: 'sk5_niveau', cKey: 'sk5_commentaire' },
+        ];
+
+        skills.forEach((sk, si) => {
+            const niveauVal   = niveauLabels[fd[sk.nKey]] || '';
+            const commentVal  = fd[sk.cKey] || '';
+            const nameLines   = doc.splitTextToSize(sk.name, cols[0] - 4);
+            const descLines   = doc.splitTextToSize(sk.desc, cols[1] - 4);
+            const niveauLines = doc.splitTextToSize(niveauVal, cols[2] - 4);
+            const commentLines= doc.splitTextToSize(commentVal, cols[3] - 4);
+            const rowH = Math.max(nameLines.length, descLines.length, niveauLines.length, commentLines.length) * 4.5 + 5;
+            chk(rowH);
+
+            const bg = si % 2 === 0 ? [248, 248, 252] : [255, 255, 255];
+            doc.setFillColor(...bg);
+            doc.rect(ML, y, CW, rowH, 'F');
+            doc.setDrawColor(...LGRAY);
+            doc.rect(ML, y, CW, rowH, 'S');
+            colX.slice(1).forEach(cx => { doc.line(cx, y, cx, y + rowH); });
+
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...NAVY);
+            doc.text(nameLines, colX[0] + 2, y + 4);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK); doc.setFontSize(7.5);
+            doc.text(descLines,   colX[1] + 2, y + 4);
+            doc.text(niveauLines, colX[2] + 2, y + 4);
+            doc.text(commentLines,colX[3] + 2, y + 4);
+            y += rowH;
+        });
+
+        // ── Retourner le PDF en base64 (pas de téléchargement direct) ──
+        const safeName = ((fd.nom || 'candidat') + '_' + (fd.prenom || '')).toLowerCase()
+            .replace(/[^a-z0-9_]/g, '_').replace(/__+/g, '_');
+        return {
+            pdfBase64: doc.output('datauristring'),
+            fileName:  'dossier_inscription_' + safeName + '.pdf',
+        };
+    }
+
+    /* ── Form submit ── */
+    document.getElementById('mainForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const d1 = document.getElementById('decl_1');
+        const d2 = document.getElementById('decl_2');
+
+        if (!d1.checked || !d2.checked) {
+            alert('Veuillez cocher les deux premières déclarations obligatoires avant de soumettre.');
+            d1.closest('.check-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Collecte des données du formulaire
+        const form = document.getElementById('mainForm');
+        const fd = {};
+
+        // Champs texte, select, textarea
+        form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="file"]), select, textarea').forEach(el => {
+            if (el.name) fd[el.name] = el.value;
+        });
+
+        // Boutons radio — seulement le coché
+        form.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+            if (el.name) fd[el.name] = el.value;
+        });
+
+        // Cases à cocher
+        form.querySelectorAll('input[type="checkbox"]').forEach(el => {
+            if (el.name) fd[el.name] = el.checked;
+        });
+
+        console.log('[BTS] Nom:', fd.nom, '| Prénom:', fd.prenom, '| Email:', fd.email);
+        console.log('[BTS] fd complet :', JSON.stringify(fd, null, 2));
+
+        // État "envoi en cours"
+        const btn = document.getElementById('btnSubmit');
+        btn.textContent = 'Envoi en cours…';
+        btn.disabled = true;
+
+        let pdfBase64, fileName;
+        try {
+            const result = generatePDF(fd);
+            pdfBase64 = result.pdfBase64;
+            fileName  = result.fileName;
+            console.log('[BTS] PDF généré, taille base64 :', pdfBase64.length);
+        } catch (pdfErr) {
+            console.error('[BTS] Erreur génération PDF :', pdfErr);
+            btn.textContent = 'Envoyer ma candidature';
+            btn.disabled = false;
+            btn.style.background = '';
+            btn.style.boxShadow = '';
+            alert('Erreur lors de la génération du PDF : ' + pdfErr.message + '\n\nVeuillez réessayer ou contacter l\'école.');
+            return;
+        }
+        btn.style.background = '#a0a0b0';
+        btn.style.boxShadow = 'none';
+
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ formData: fd, pdfBase64, fileName }),
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error || `Erreur serveur (${response.status})`);
+            }
+
+            // Succès
+            btn.textContent = '✓ Dossier envoyé !';
+            btn.style.background = '#22c55e';
+            btn.style.color = 'white';
+            btn.style.boxShadow = '0 4px 22px rgba(34,197,94,0.4)';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+                alert('Votre dossier a bien été envoyé.\nVous serez recontacté(e) dans les plus brefs délais.\n\nBonne chance pour votre candidature !');
+            }, 500);
+
+        } catch (err) {
+            // Erreur
+            btn.textContent = '✗ Erreur — réessayer';
+            btn.style.background = '#ef4444';
+            btn.style.color = 'white';
+            btn.style.boxShadow = '0 4px 22px rgba(239,68,68,0.4)';
+            btn.disabled = false;
+            alert('Impossible d\'envoyer le dossier :\n' + err.message + '\n\nVérifiez que votre workflow n8n est bien activé et que l\'URL webhook est correcte.');
+        }
+    });
+</script>
+
+</body>
+</html>
