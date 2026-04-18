@@ -1565,9 +1565,12 @@
         btn.style.background = '#a0a0b0';
         btn.style.boxShadow = 'none';
 
-        // Construire le payload multipart : JSON + PDF + fichiers uploadés
+        // Construire le payload multipart : champs individuels + PDF + fichiers uploadés
         const payload = new FormData();
-        payload.append('formData', JSON.stringify(fd));
+        // Chaque champ du formulaire est envoyé séparément pour être lisible directement dans n8n
+        Object.entries(fd).forEach(([key, value]) => {
+            payload.append(key, value === null || value === undefined ? '' : String(value));
+        });
 
         // PDF généré : convertir le data URI en Blob
         const pdfBlob = await fetch(pdfBase64).then(r => r.blob());
