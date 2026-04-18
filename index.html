@@ -1547,40 +1547,6 @@
         btn.textContent = 'Envoi en cours…';
         btn.disabled = true;
 
-        // Lecture des pièces jointes en base64
-        const fileInputIds = [
-            { id: 'f_cv',   label: 'CV' },
-            { id: 'f_id',   label: 'Pièce d\'identité' },
-            { id: 'f_secu', label: 'Carte vitale' },
-            { id: 'f_jdc',  label: 'JDC' },
-        ];
-
-        function readFileAsBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const dataUrl = reader.result;
-                    const base64 = dataUrl.split(',')[1];
-                    resolve({ filename: file.name, mimeType: file.type || 'application/octet-stream', data: base64 });
-                };
-                reader.onerror = () => reject(new Error('Erreur lecture fichier : ' + file.name));
-                reader.readAsDataURL(file);
-            });
-        }
-
-        const attachments = [];
-        for (const { id } of fileInputIds) {
-            const input = document.getElementById(id);
-            if (input && input.files && input.files.length > 0) {
-                try {
-                    const att = await readFileAsBase64(input.files[0]);
-                    attachments.push(att);
-                } catch (fileErr) {
-                    console.warn('[BTS] Impossible de lire le fichier', id, ':', fileErr.message);
-                }
-            }
-        }
-
         let pdfBase64, fileName;
         try {
             const result = generatePDF(fd);
@@ -1599,15 +1565,29 @@
         btn.style.background = '#a0a0b0';
         btn.style.boxShadow = 'none';
 
-        // Extraire uniquement le base64 (sans le préfixe data URI) pour le PDF principal
-        const pdfBase64Data = pdfBase64.split(',')[1] || pdfBase64;
-        attachments.unshift({ filename: fileName, mimeType: 'application/pdf', data: pdfBase64Data });
+        // Construire le payload multipart : JSON + PDF + fichiers uploadés
+        const payload = new FormData();
+        payload.append('formData', JSON.stringify(fd));
+
+        // PDF généré : convertir le data URI en Blob
+        const pdfBlob = await fetch(pdfBase64).then(r => r.blob());
+        payload.append('pdf', pdfBlob, fileName);
+
+        // Pièces jointes uploadées par l'étudiant
+        const fileInputIds = ['f_cv', 'f_id', 'f_secu', 'f_jdc'];
+        for (const id of fileInputIds) {
+            const input = document.getElementById(id);
+            if (input && input.files && input.files.length > 0) {
+                payload.append(id, input.files[0], input.files[0].name);
+                console.log('[BTS] Fichier ajouté:', id, input.files[0].name);
+            }
+        }
 
         try {
             const response = await fetch(WEBHOOK_URL, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ formData: fd, pdfBase64, fileName, attachments }),
+                method: 'POST',
+                body:   payload,
+                // Pas de Content-Type : le navigateur le définit automatiquement avec le boundary
             });
 
             if (!response.ok) {
