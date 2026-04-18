@@ -765,98 +765,32 @@
                 <h2>Choix du Programme &amp; de la Rentrée</h2>
             </div>
             <div class="section-body">
-                <p class="helper-text" style="margin-bottom:20px;">Indiquez vos vœux par ordre de préférence. Le 1er choix est obligatoire.</p>
-
-                <div class="subsection">
-                    <h3>1<sup>er</sup> Choix <span class="req">*</span></h3>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label>Modalité d'étude <span class="req">*</span></label>
-                            <select name="prog1_modalite" required>
-                                <option value="">-- Sélectionner --</option>
-                                <option>Alternance</option>
-                                <option>Centre de formation</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Centre de formation <span class="req">*</span></label>
-                            <select name="prog1_centre" required>
-                                <option value="">-- Sélectionner --</option>
-                                <option>Bruges</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Programme <span class="req">*</span></label>
-                            <select name="prog1_programme" required>
-                                <option value="">-- Sélectionner --</option>
-                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
-                                <option>BTS MCO — Management Commercial Opérationnel</option>
-                                <option>BTS Tourisme</option>
-                            </select>
-                        </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Modalité d'étude <span class="req">*</span></label>
+                        <select name="prog1_modalite" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="Alternance">Alternance</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Centre de formation <span class="req">*</span></label>
+                        <select name="prog1_centre" required>
+                            <option value="">-- Sélectionner --</option>
+                            <!-- Centres disponibles : ajouter d'autres options ici -->
+                            <option value="Bruges">Bruges</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Programme <span class="req">*</span></label>
+                        <select name="prog1_programme" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="BTS NDRC">BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
+                            <option value="BTS MCO">BTS MCO — Management Commercial Opérationnel</option>
+                            <option value="BTS Tourisme">BTS Tourisme</option>
+                        </select>
                     </div>
                 </div>
-
-                <div class="subsection">
-                    <h3>2<sup>e</sup> Choix <span style="font-size:.8rem;font-weight:400;color:#999;">(optionnel)</span></h3>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label>Modalité d'étude</label>
-                            <select name="prog2_modalite">
-                                <option value="">-- Sélectionner --</option>
-                                <option>Alternance</option>
-                                <option>Centre de formation</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Centre de formation</label>
-                            <select name="prog2_centre">
-                                <option value="">-- Sélectionner --</option>
-                                <option>Bruges</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Programme</label>
-                            <select name="prog2_programme">
-                                <option value="">-- Sélectionner --</option>
-                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
-                                <option>BTS MCO — Management Commercial Opérationnel</option>
-                                <option>BTS Tourisme</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="subsection">
-                    <h3>3<sup>e</sup> Choix <span style="font-size:.8rem;font-weight:400;color:#999;">(optionnel)</span></h3>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label>Modalité d'étude</label>
-                            <select name="prog3_modalite">
-                                <option value="">-- Sélectionner --</option>
-                                <option>Alternance</option>
-                                <option>Centre de formation</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Centre de formation</label>
-                            <select name="prog3_centre">
-                                <option value="">-- Sélectionner --</option>
-                                <option>Bruges</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Programme</label>
-                            <select name="prog3_programme">
-                                <option value="">-- Sélectionner --</option>
-                                <option>BTS NDRC — Négociation et Digitalisation de la Relation Client</option>
-                                <option>BTS MCO — Management Commercial Opérationnel</option>
-                                <option>BTS Tourisme</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -1268,6 +1202,8 @@
             seg.className = 'prog-seg';
             sec._segIdx = i;
             strip.appendChild(seg);
+            const numEl = sec.querySelector('.sec-num');
+            if (numEl) numEl.textContent = i + 1;
         });
         updateProgress();
     }
@@ -1374,15 +1310,15 @@
 
         function fieldLine(label, value, x, w) {
             x = x || ML; w = w || CW;
-            const lh = 5.5;
+            const lh = 7;
             chk(lh);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(8.5);
             doc.setTextColor(...NAVY);
-            doc.text(label + ' :', x, y);
+            doc.text(label + ' : ', x, y);
             doc.setFont('helvetica', 'normal');
             doc.setTextColor(...BLACK);
-            const lw = doc.getTextWidth(label + ' :') + 2;
+            const lw = doc.getTextWidth(label + ' : ');
             const avail = w - lw - 1;
             const lines = doc.splitTextToSize(value || '', avail);
             doc.text(lines, x + lw, y);
@@ -1391,18 +1327,18 @@
 
         function twoFields(l1, v1, l2, v2) {
             const hw = CW / 2 - 2;
-            const lh = 5.5;
+            const lh = 7;
             chk(lh);
             // Left
             doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
-            doc.text(l1 + ' :', ML, y);
+            doc.text(l1 + ' : ', ML, y);
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
-            doc.text(doc.splitTextToSize(v1 || '', hw - doc.getTextWidth(l1 + ' :') - 2)[0] || '', ML + doc.getTextWidth(l1 + ' :') + 2, y);
+            doc.text(doc.splitTextToSize(v1 || '', hw - doc.getTextWidth(l1 + ' : '))[0] || '', ML + doc.getTextWidth(l1 + ' : '), y);
             // Right
             doc.setFont('helvetica', 'bold'); doc.setTextColor(...NAVY);
-            doc.text(l2 + ' :', ML + CW / 2, y);
+            doc.text(l2 + ' : ', ML + CW / 2, y);
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
-            doc.text(doc.splitTextToSize(v2 || '', hw - doc.getTextWidth(l2 + ' :') - 2)[0] || '', ML + CW / 2 + doc.getTextWidth(l2 + ' :') + 2, y);
+            doc.text(doc.splitTextToSize(v2 || '', hw - doc.getTextWidth(l2 + ' : '))[0] || '', ML + CW / 2 + doc.getTextWidth(l2 + ' : '), y);
             y += lh;
         }
 
@@ -1611,6 +1547,40 @@
         btn.textContent = 'Envoi en cours…';
         btn.disabled = true;
 
+        // Lecture des pièces jointes en base64
+        const fileInputIds = [
+            { id: 'f_cv',   label: 'CV' },
+            { id: 'f_id',   label: 'Pièce d\'identité' },
+            { id: 'f_secu', label: 'Carte vitale' },
+            { id: 'f_jdc',  label: 'JDC' },
+        ];
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const dataUrl = reader.result;
+                    const base64 = dataUrl.split(',')[1];
+                    resolve({ filename: file.name, mimeType: file.type || 'application/octet-stream', data: base64 });
+                };
+                reader.onerror = () => reject(new Error('Erreur lecture fichier : ' + file.name));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const attachments = [];
+        for (const { id } of fileInputIds) {
+            const input = document.getElementById(id);
+            if (input && input.files && input.files.length > 0) {
+                try {
+                    const att = await readFileAsBase64(input.files[0]);
+                    attachments.push(att);
+                } catch (fileErr) {
+                    console.warn('[BTS] Impossible de lire le fichier', id, ':', fileErr.message);
+                }
+            }
+        }
+
         let pdfBase64, fileName;
         try {
             const result = generatePDF(fd);
@@ -1629,11 +1599,15 @@
         btn.style.background = '#a0a0b0';
         btn.style.boxShadow = 'none';
 
+        // Extraire uniquement le base64 (sans le préfixe data URI) pour le PDF principal
+        const pdfBase64Data = pdfBase64.split(',')[1] || pdfBase64;
+        attachments.unshift({ filename: fileName, mimeType: 'application/pdf', data: pdfBase64Data });
+
         try {
             const response = await fetch(WEBHOOK_URL, {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ formData: fd, pdfBase64, fileName }),
+                body:    JSON.stringify({ formData: fd, pdfBase64, fileName, attachments }),
             });
 
             if (!response.ok) {
