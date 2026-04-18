@@ -1293,11 +1293,14 @@
         const CW = PW - ML - MR; // 174 mm
         let y = 16;
 
+        const LH   = 8;    // line height mm
+        const SAFE = 265;  // safe bottom margin mm
+
         function newPage() { doc.addPage(); y = 16; }
-        function chk(h) { if (y + h > 278) newPage(); }
+        function chk(h) { if (y + h > SAFE) newPage(); }
 
         function secHeader(title) {
-            chk(10);
+            chk(24); // header + at least one field below
             doc.setFillColor(...RED);
             doc.rect(ML, y, CW, 7, 'F');
             doc.setFont('helvetica', 'bold');
@@ -1310,43 +1313,53 @@
 
         function fieldLine(label, value, x, w) {
             x = x || ML; w = w || CW;
-            const lh = 7;
-            chk(lh);
+            // Calculer la largeur du label AVANT de dessiner pour dimensionner chk correctement
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(8.5);
+            const lw    = doc.getTextWidth(label + ' : ');
+            const avail = Math.max(w - lw - 1, 30);
+            doc.setFont('helvetica', 'normal');
+            const lines = doc.splitTextToSize(value || '', avail);
+            const totalH = Math.max(lines.length, 1) * LH;
+            chk(totalH);
+            doc.setFont('helvetica', 'bold');
             doc.setTextColor(...NAVY);
             doc.text(label + ' : ', x, y);
             doc.setFont('helvetica', 'normal');
             doc.setTextColor(...BLACK);
-            const lw = doc.getTextWidth(label + ' : ');
-            const avail = w - lw - 1;
-            const lines = doc.splitTextToSize(value || '', avail);
             doc.text(lines, x + lw, y);
-            y += Math.max(lines.length, 1) * lh;
+            y += totalH;
         }
 
         function twoFields(l1, v1, l2, v2) {
-            const hw = CW / 2 - 2;
-            const lh = 7;
-            chk(lh);
-            // Left
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+            const hw = CW / 2 - 3;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            const lw1 = doc.getTextWidth(l1 + ' : ');
+            const lw2 = doc.getTextWidth(l2 + ' : ');
+            doc.setFont('helvetica', 'normal');
+            const v1Lines = doc.splitTextToSize(v1 || '', Math.max(hw - lw1, 20));
+            const v2Lines = doc.splitTextToSize(v2 || '', Math.max(hw - lw2, 20));
+            const rowH = Math.max(v1Lines.length, v2Lines.length, 1) * LH;
+            chk(rowH);
+            // Gauche
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(...NAVY);
             doc.text(l1 + ' : ', ML, y);
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
-            doc.text(doc.splitTextToSize(v1 || '', hw - doc.getTextWidth(l1 + ' : '))[0] || '', ML + doc.getTextWidth(l1 + ' : '), y);
-            // Right
+            doc.text(v1Lines, ML + lw1, y);
+            // Droite
             doc.setFont('helvetica', 'bold'); doc.setTextColor(...NAVY);
             doc.text(l2 + ' : ', ML + CW / 2, y);
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
-            doc.text(doc.splitTextToSize(v2 || '', hw - doc.getTextWidth(l2 + ' : '))[0] || '', ML + CW / 2 + doc.getTextWidth(l2 + ' : '), y);
-            y += lh;
+            doc.text(v2Lines, ML + CW / 2 + lw2, y);
+            y += rowH;
         }
 
         function separator() {
-            chk(4);
+            chk(6);
             doc.setDrawColor(...LGRAY);
             doc.line(ML, y - 1, ML + CW, y - 1);
-            y += 2;
+            y += 4;
         }
 
         // ══════════════ PAGE 1 ══════════════
@@ -1429,14 +1442,17 @@
         const niveauMap = { debutant: 'D\xE9butant', intermediaire: 'Interm\xE9diaire', avance: 'Avanc\xE9', expert: 'Expert' };
 
         function bigField(label, value) {
-            chk(10);
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...NAVY);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5);
             const lLines = doc.splitTextToSize(label, CW);
-            doc.text(lLines, ML, y); y += lLines.length * 5 + 1;
-            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
+            doc.setFont('helvetica', 'normal');
             const vLines = doc.splitTextToSize(value || '', CW);
-            chk(vLines.length * 4.5 + 6);
-            doc.text(vLines, ML, y); y += vLines.length * 4.5 + 7;
+            // Vérifier que label + valeur tiennent ensemble sur la page
+            const totalH = lLines.length * LH + Math.max(vLines.length, 1) * LH + 4;
+            chk(totalH);
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(...NAVY);
+            doc.text(lLines, ML, y); y += lLines.length * LH;
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...BLACK);
+            doc.text(vLines, ML, y); y += Math.max(vLines.length, 1) * LH + 4;
         }
 
         bigField("Niveau de connaissance ou d'exp\xE9rience actuel en lien avec la formation :", niveauMap[fd.niveau] || '');
