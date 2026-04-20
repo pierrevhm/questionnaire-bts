@@ -1489,12 +1489,14 @@
         ];
 
         skills.forEach((sk, si) => {
-            const niveauVal   = niveauLabels[fd[sk.nKey]] || '';
-            const commentVal  = fd[sk.cKey] || '';
+            const niveauVal  = niveauLabels[fd[sk.nKey]] || '';
+            const commentVal = fd[sk.cKey] || '';
+            doc.setFont('helvetica', 'bold');   doc.setFontSize(8);
             const nameLines   = doc.splitTextToSize(sk.name, cols[0] - 4);
-            const descLines   = doc.splitTextToSize(sk.desc, cols[1] - 4);
-            const niveauLines = doc.splitTextToSize(niveauVal, cols[2] - 4);
-            const commentLines= doc.splitTextToSize(commentVal, cols[3] - 4);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
+            const descLines   = doc.splitTextToSize(sk.desc,     cols[1] - 4);
+            const niveauLines = doc.splitTextToSize(niveauVal,   cols[2] - 4);
+            const commentLines= doc.splitTextToSize(commentVal,  cols[3] - 4);
             const rowH = Math.max(nameLines.length, descLines.length, niveauLines.length, commentLines.length) * 4.5 + 5;
             chk(rowH);
 
