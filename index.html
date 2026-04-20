@@ -1518,8 +1518,8 @@
         const safeName = ((fd.nom || 'candidat') + '_' + (fd.prenom || '')).toLowerCase()
             .replace(/[^a-z0-9_]/g, '_').replace(/__+/g, '_');
         return {
-            pdfBase64: doc.output('datauristring'),
-            fileName:  'dossier_inscription_' + safeName + '.pdf',
+            pdfBlob: doc.output('blob'),
+            fileName: 'dossier_inscription_' + safeName + '.pdf',
         };
     }
 
@@ -1563,12 +1563,12 @@
         btn.textContent = 'Envoi en cours…';
         btn.disabled = true;
 
-        let pdfBase64, fileName;
+        let pdfBlob, fileName;
         try {
             const result = generatePDF(fd);
-            pdfBase64 = result.pdfBase64;
-            fileName  = result.fileName;
-            console.log('[BTS] PDF généré, taille base64 :', pdfBase64.length);
+            pdfBlob  = result.pdfBlob;
+            fileName = result.fileName;
+            console.log('[BTS] PDF généré, taille blob :', pdfBlob.size);
         } catch (pdfErr) {
             console.error('[BTS] Erreur génération PDF :', pdfErr);
             btn.textContent = 'Envoyer ma candidature';
@@ -1588,8 +1588,6 @@
             payload.append(key, value === null || value === undefined ? '' : String(value));
         });
 
-        // PDF généré : convertir le data URI en Blob
-        const pdfBlob = await fetch(pdfBase64).then(r => r.blob());
         payload.append('pdf', pdfBlob, fileName);
 
         // Pièces jointes uploadées par l'étudiant
