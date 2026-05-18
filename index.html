@@ -207,7 +207,7 @@
         .full { grid-column: 1 / -1; }
 
         /* ── FIELD ── */
-        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 
         .field label {
             font-size: 0.8rem;
@@ -222,6 +222,7 @@
         .field input,
         .field select,
         .field textarea {
+            width: 100%;
             border: 1.5px solid var(--border);
             border-radius: 8px;
             padding: 11px 14px;
@@ -545,9 +546,9 @@
                 padding: 10px 14px;
                 text-align: center;
             }
-            .section-header { padding: 16px; }
+            .section-header { padding: 16px; flex-wrap: wrap; }
             .section-header .sec-num { width: 36px; height: 36px; font-size: 1.1rem; }
-            .section-header h2 { font-size: 1rem; }
+            .section-header h2 { font-size: 1rem; min-width: 0; word-break: break-word; }
             .field { margin-bottom: 14px; }
             .field label { font-size: 0.8rem; }
             .field input, .field select, .field textarea { padding: 10px 12px; font-size: 0.85rem; }
@@ -833,6 +834,22 @@
                             <option value="2029-2031">2029 – 2031</option>
                         </select>
                     </div>
+                    <div class="field full">
+                        <label>Dernière classe ou cycle suivi avant inscription</label>
+                        <select name="derniere_classe">
+                            <option value="">-- Sélectionner --</option>
+                            <option value="cycle_complet_diplome">L'apprenti a suivi la dernière année du cycle de formation et a obtenu le diplôme ou titre</option>
+                            <option value="1ere_annee_validee">L'apprenti a suivi la 1ère année du cycle et l'a validée (examens réussis mais année non diplômante)</option>
+                            <option value="1ere_annee_non_validee">L'apprenti a suivi la 1ère année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option value="2eme_annee_validee">L'apprenti a suivi la 2è année du cycle et l'a validée (examens réussis mais année non diplômante)</option>
+                            <option value="2eme_annee_non_validee">L'apprenti a suivi la 2è année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option value="3eme_annee_validee">L'apprenti a suivi la 3è année du cycle et l'a validée (examens réussis mais année non diplômante, cycle adaptés)</option>
+                            <option value="3eme_annee_non_validee">L'apprenti a suivi la 3è année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option value="1er_cycle_secondaire">L'apprenti a achevé le 1er cycle de l'enseignement secondaire (collège)</option>
+                            <option value="interruption_3eme">L'apprenti a interrompu ses études en classe de 3è</option>
+                            <option value="interruption_4eme">L'apprenti a interrompu ses études en classe de 4è</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -894,7 +911,7 @@
         <div class="form-section" data-sec="5">
             <div class="section-header">
                 <div class="sec-num">5</div>
-                <h2>Test de Positionnement</h2>
+                <h2>Relevé des besoins</h2>
             </div>
             <div class="section-body">
 
@@ -1095,6 +1112,47 @@
                             <div class="field">
                                 <label>Email</label>
                                 <input type="email" name="ent_email" placeholder="contact@entreprise.fr">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="subsection" style="margin-top:14px;">
+                        <h3>Informations sur le Contrat</h3>
+                        <div class="form-grid">
+                            <div class="field full">
+                                <label>Détail du contrat</label>
+                                <select name="contrat_detail">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="premier_contrat">Premier contrat d'apprentissage de l'apprenti</option>
+                                    <option value="nouveau_meme_employeur">Nouveau contrat avec un apprenti qui a terminé son précédent contrat auprès d'un même employeur</option>
+                                    <option value="nouveau_autre_employeur">Nouveau contrat avec un apprenti qui a terminé son précédent contrat auprès d'un autre employeur</option>
+                                    <option value="nouveau_rompu_autre_employeur">Nouveau contrat avec un apprenti dont le précédent contrat auprès d'un autre employeur a été rompu</option>
+                                    <option value="modification_situation_juridique">Modification de la situation juridique de l'employeur</option>
+                                    <option value="changement_employeur_saisonnier">Changement d'employeur dans le cadre d'un contrat saisonnier</option>
+                                    <option value="prolongation_echec_examen">Prolongation du contrat suite à un échec à l'examen de l'apprenti</option>
+                                    <option value="prolongation_travailleur_handicape">Prolongation du contrat suite à la reconnaissance de l'apprenti comme travailleur handicapé</option>
+                                    <option value="modification_diplome">Modification du diplôme préparé par l'apprenti</option>
+                                    <option value="autres_changements">Autres changements : changement de maître d'apprentissage, de durée de travail hebdomadaire, réduction de durée, etc.</option>
+                                    <option value="modification_lieu_execution">Modification du lieu d'exécution du contrat</option>
+                                    <option value="modification_lieu_formation">Modification du lieu principal de réalisation de la formation théorique</option>
+                                </select>
+                            </div>
+                            <div class="field full">
+                                <label>Situation avant ce contrat</label>
+                                <select name="situation_avant_contrat">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="scolaire">Scolaire</option>
+                                    <option value="prepa_apprentissage">Prépa apprentissage</option>
+                                    <option value="etudiant">Etudiant</option>
+                                    <option value="contrat_apprentissage">Contrat d'apprentissage</option>
+                                    <option value="contrat_professionnalisation">Contrat de professionnalisation</option>
+                                    <option value="contrat_aide">Contrat aidé</option>
+                                    <option value="formation_cfa_avant_signature">En formation au CFA sous statut de stagiaire de la formation professionnelle, avant signature d'un contrat d'apprentissage (L6222-12-1 du code du travail)</option>
+                                    <option value="formation_cfa_sans_contrat">En formation, au CFA sans contrat sous statut de stagiaire de la formation professionnelle, suite à rupture (5° de L6231-2 du code du travail)</option>
+                                    <option value="autres_situations_stagiaire">Autres situations sous statut de stagiaire de la formation professionnelle</option>
+                                    <option value="salarie">Salarié</option>
+                                    <option value="recherche_emploi">Personne à la recherche d'un emploi (inscrite ou non à Pôle Emploi)</option>
+                                    <option value="inactif">Inactif</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -1406,13 +1464,6 @@
         }
 
         // ══════════════ PAGE 1 ══════════════
-        // Date du jour en haut à droite
-        const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(...BLACK);
-        doc.text('Date : ' + today, PW - MR, y, { align: 'right' });
-
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(18);
         doc.setTextColor(...NAVY);
@@ -1488,7 +1539,7 @@
         fieldLine('Num\xE9ro de s\xE9curit\xE9 sociale', fd.num_secu);
         y += 4;
 
-        secHeader('TEST DE POSITIONNEMENT');
+        secHeader('Relevé des besoins');
         const niveauMap = { debutant: 'D\xE9butant', intermediaire: 'Interm\xE9diaire', avance: 'Avanc\xE9', expert: 'Expert' };
 
         function bigField(label, value) {
