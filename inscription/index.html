@@ -924,7 +924,7 @@
                             <div class="file-icon">📸</div>
                             <div class="file-label-main">Cliquez pour déposer votre photo d'identité</div>
                             <div class="file-label-sub">JPG, PNG, PDF — Max 5 Mo</div>
-                            <input type="file" id="f_photo" name="f_photo" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'fn_photo')">
+                            <input type="file" id="f_photo" name="f_photo" accept=".pdf,.jpg,.jpeg,.png" onclick="event.stopPropagation()" onchange="showFile(this,'fn_photo')">
                             <div class="file-name-display" id="fn_photo"></div>
                         </div>
                     </div>
@@ -935,7 +935,7 @@
                             <div class="file-icon">🎓</div>
                             <div class="file-label-main">Cliquez pour déposer votre diplôme / attestation</div>
                             <div class="file-label-sub">PDF, JPG, PNG — Max 5 Mo</div>
-                            <input type="file" id="f_diplome" name="f_diplome" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'fn_diplome')">
+                            <input type="file" id="f_diplome" name="f_diplome" accept=".pdf,.jpg,.jpeg,.png" onclick="event.stopPropagation()" onchange="showFile(this,'fn_diplome')">
                             <div class="file-name-display" id="fn_diplome"></div>
                         </div>
                     </div>

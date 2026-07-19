@@ -1,0 +1,128 @@
+{
+  "name": "BTS Business School — Réception Inscriptions",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "inscription-bts",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4a00-8000-000000000001",
+      "name": "Réception Inscription",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [220, 340],
+      "webhookId": "inscription-bts-webhook"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Garde les pièces jointes qui ont un nom ET une taille > 0.\n// Élimine les binaires vides / fantômes (ex: f_diplome non fourni) qui font planter Gmail.\nconst items = $input.all();\nfor (const item of items) {\n  const binaries = item.binary || {};\n  const cleaned = {};\n  for (const key of Object.keys(binaries)) {\n    const b = binaries[key];\n    const size = typeof b.fileSize === 'number' ? b.fileSize : parseFloat(String(b.fileSize || '0'));\n    if (b.fileName && b.fileName.trim() !== '' && size > 0) {\n      cleaned[key] = b;\n    }\n  }\n  item.binary = cleaned;\n}\nreturn items;"
+      },
+      "id": "a1b2c3d4-0005-4a00-8000-000000000005",
+      "name": "Nettoyer pièces jointes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 340]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "admin@bts-business-school.com",
+        "subject": "=Nouvelle inscription — {{ $json.body.nom }} {{ $json.body.prenom }} ({{ $json.body.futur_diplome }})",
+        "emailType": "html",
+        "message": "=<h2>Nouvelle finalisation d'inscription</h2>\n<p><b>Candidat :</b> {{ $json.body.nom }} {{ $json.body.prenom }}<br>\n<b>Date de naissance :</b> {{ $json.body.date_naissance }}<br>\n<b>N° dossier de candidature :</b> {{ $json.body.num_dossier_candidature || '—' }}</p>\n<p><b>Entreprise :</b> {{ $json.body.ent_entreprise || '—' }}<br>\n<b>Contact :</b> {{ $json.body.ent_contact_prenom }} {{ $json.body.ent_contact_nom }} ({{ $json.body.ent_contact_fonction }})<br>\n<b>Tél :</b> {{ $json.body.ent_tel }} — <b>Email :</b> {{ $json.body.ent_email }}<br>\n<b>Type de contrat :</b> {{ $json.body.contrat_detail }}</p>\n<p><b>Formation</b><br>\nBac : {{ $json.body.bac_annee }} — {{ $json.body.bac_categorie }} — {{ $json.body.bac_specialite1 }} {{ $json.body.bac_specialite2 }}<br>\nSituation avant contrat : {{ $json.body.situation_avant_contrat }}<br>\nDernier diplôme : {{ $json.body.dernier_diplome }}<br>\n<b>Futur diplôme :</b> {{ $json.body.futur_diplome }}<br>\nExpérience pro : {{ $json.body.exp_pro }}</p>\n<p><b>Contact d'urgence :</b> {{ $json.body.urgence_prenom }} {{ $json.body.urgence_nom }} ({{ $json.body.urgence_lien }}) — {{ $json.body.urgence_tel }}<br>\n{{ $json.body.urgence_adresse }}</p>\n<hr>\n<p>Le récapitulatif complet (PDF) et les pièces justificatives sont en pièces jointes.</p>",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "={{ Object.keys($binary).join(',') }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "a1b2c3d4-0002-4a00-8000-000000000002",
+      "name": "Email à l'école",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [740, 340],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REMPLACER_PAR_VOTRE_CREDENTIAL",
+          "name": "Gmail (même compte que Candidatures)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"ok\": true }",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0003-4a00-8000-000000000003",
+      "name": "Réponse OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1000, 340]
+    },
+    {
+      "parameters": {
+        "content": "## Finalisation d'inscription (Lien 2)\n\nWebhook : `POST /webhook/inscription-bts`\n\nChamps texte dans `$json.body.*` + fichiers binaires : `pdf`, `f_photo`, `f_diplome` (optionnel).\n\nLe nœud **Nettoyer pièces jointes** supprime les binaires vides / introuvables (ex. diplôme non fourni) avant l'envoi → Gmail ne reçoit que des fichiers valides via `Object.keys($binary)`.\n\n⚠️ Sélectionner le credential Gmail (le même que le workflow Candidatures) sur « Email à l'école ».",
+        "height": 340,
+        "width": 400,
+        "color": 4
+      },
+      "id": "a1b2c3d4-0004-4a00-8000-000000000004",
+      "name": "Notice",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [180, 20]
+    }
+  ],
+  "connections": {
+    "Réception Inscription": {
+      "main": [
+        [
+          {
+            "node": "Nettoyer pièces jointes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nettoyer pièces jointes": {
+      "main": [
+        [
+          {
+            "node": "Email à l'école",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email à l'école": {
+      "main": [
+        [
+          {
+            "node": "Réponse OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {}
+}
