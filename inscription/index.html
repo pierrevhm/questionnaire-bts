@@ -807,6 +807,23 @@
                     </div>
 
                     <div class="field full">
+                        <label>Dernière classe ou cycle suivi avant inscription <span class="req">*</span></label>
+                        <select name="derniere_classe" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option>L'apprenti a suivi la dernière année du cycle de formation et a obtenu le diplôme ou titre</option>
+                            <option>L'apprenti a suivi la 1ère année du cycle et l'a validée (examens réussis mais année non diplômante)</option>
+                            <option>L'apprenti a suivi la 1ère année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option>L'apprenti a suivi la 2è année du cycle et l'a validée (examens réussis mais année non diplômante)</option>
+                            <option>L'apprenti a suivi la 2è année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option>L'apprenti a suivi la 3è année du cycle et l'a validée (examens réussis mais année non diplômante, cycle adaptés)</option>
+                            <option>L'apprenti a suivi la 3è année du cycle mais ne l'a pas validée (échec aux examens, interruption ou abandon de formation)</option>
+                            <option>L'apprenti a achevé le 1er cycle de l'enseignement secondaire (collège)</option>
+                            <option>L'apprenti a interrompu ses études en classe de 3è</option>
+                            <option>L'apprenti a interrompu ses études en classe de 4è</option>
+                        </select>
+                    </div>
+
+                    <div class="field full">
                         <label>Dernier diplôme obtenu <span class="req">*</span></label>
                         <select name="dernier_diplome" required>
                             <option value="">-- Sélectionner --</option>
@@ -1191,6 +1208,7 @@
         fieldLine('Cat\xE9gorie du Baccalaur\xE9at', fd.bac_categorie);
         twoFields('Sp\xE9cialit\xE9 1', fd.bac_specialite1, 'Sp\xE9cialit\xE9 2', fd.bac_specialite2);
         fieldLine('Situation avant ce contrat', fd.situation_avant_contrat);
+        fieldLine('Derni\xE8re classe avant inscription', fd.derniere_classe);
         fieldLine('Dernier dipl\xF4me obtenu', fd.dernier_diplome);
         fieldLine('Futur dipl\xF4me pr\xE9par\xE9', fd.futur_diplome);
         fieldLine('Exp\xE9rience professionnelle', fd.exp_pro === 'oui' ? 'Oui' : fd.exp_pro === 'non' ? 'Non' : '');
