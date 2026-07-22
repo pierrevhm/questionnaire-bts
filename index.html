@@ -1638,6 +1638,21 @@
             return;
         }
 
+        // Pièces jointes obligatoires (CV, pièce d'identité, attestation sécu)
+        const requiredFiles = [
+            { id: 'f_cv',   label: 'le Curriculum Vitae' },
+            { id: 'f_id',   label: "la pièce d'identité (ou passeport)" },
+            { id: 'f_secu', label: "l'attestation de Sécurité Sociale" },
+        ];
+        for (const f of requiredFiles) {
+            const input = document.getElementById(f.id);
+            if (!input || !input.files || input.files.length === 0) {
+                alert('Pièce manquante : vous devez déposer ' + f.label + ' avant d\'envoyer votre candidature.');
+                input.closest('.field').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
         // Bulletin 1ère année obligatoire si "Deuxième année" sélectionnée
         const anneeEntreeSel = document.querySelector('[name="annee_entree"]');
         if (anneeEntreeSel && anneeEntreeSel.value === 'Deuxième année') {
@@ -1645,6 +1660,19 @@
             if (!bull || !bull.files || bull.files.length === 0) {
                 alert('Vous avez sélectionné « Deuxième année » : le bulletin de notes de 1ère année de BTS est obligatoire.');
                 document.getElementById('block_bulletin_bts1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
+        // Taille max par fichier : 5 Mo (évite les envois trop lourds qui font échouer la requête)
+        const MAX_FILE_BYTES = 5 * 1024 * 1024;
+        const allFileIds = ['f_cv', 'f_id', 'f_secu', 'f_jdc', 'f_bulletin_bts1'];
+        for (const id of allFileIds) {
+            const input = document.getElementById(id);
+            if (input && input.files && input.files.length > 0 && input.files[0].size > MAX_FILE_BYTES) {
+                const mo = (input.files[0].size / 1024 / 1024).toFixed(1);
+                alert('Le fichier « ' + input.files[0].name + ' » fait ' + mo + ' Mo, ce qui dépasse la limite de 5 Mo.\n\nMerci de le compresser ou de le réduire avant de renvoyer votre candidature.');
+                input.closest('.field').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
         }
